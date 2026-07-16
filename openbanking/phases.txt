@@ -1,0 +1,311 @@
+FOID — Open Banking Polling Service
+Build Phases (work through these in order)
+============================================
+
+PHASE 1 — Project Structure + FastAPI Skeleton
+-----------------------------------------------
+Goal: app boots, all routes exist and return placeholder 200s. Nothing real yet.
+
+Steps:
+  1.1  Rewrite main.py as a FastAPI app:
+         - create the FastAPI() instance
+         - mount a /health GET route that returns {"status": "ok"}
+         - call uvicorn.run() in __main__
+
+  1.2  Create the folder structure:
+         openbanking/
+           main.py
+           routers/
+             __init__.py
+             kyc.py          (mock KYC endpoint)
+             credentials.py  (issue + read credentials)
+             consent.py      (record consent decisions)
+             events.py       (SSE stream)
+             demo.py         (inject synthetic trigger)
+           services/
+             __init__.py
+             ob_poller.py    (polling loop)
+             trigger_engine.py
+             credential_issuer.py
+             notifier.py
+           data/
+             mock_feed.json  (seeded transactions)
+             store.py        (in-memory state — no DB needed for hackathon)
+           phases.txt
+
+  1.3  Register all routers in main.py with their prefixes:
+         /api/kyc, /api/credentials, /api/consent, /api/events, /api/demo
+
+  1.4  Smoke test:
+         uv run uvicorn main:app --reload
+         curl http://localhost:8000/health  → {"status": "ok"}
+         curl http://localhost:8000/docs    → FastAPI auto-docs page loads
+
+Deliverable: server starts, /docs shows all route stubs, no import errors.
+
+
+PHASE 2 — Mock Data Layer
+--------------------------
+Goal: realistic seed data and an in-memory store that every service reads from.
+
+Steps:
+  2.1  Write data/mock_feed.json:
+         - Two test personas: "ada_001" (clean history) and "bode_001"
+           (has a bounced repayment later in the feed)
+         - Each persona has 6–8 transactions:
+             salary credit (150 000 NGN, category: "income")
+             airtime debit (1 000 NGN, category: "utilities")
+             loan repayment debit (25 000 NGN, category: "loan_repayment")
+             loan repayment debit with "status": "bounced"  ← trigger point
+         - Use realistic Nigerian descriptions:
+             "Salary - Acme Ltd", "MTN Airtime", "Loan Repayment - Access Bank"
+
+  2.2  Write data/store.py — thin in-memory dict wrapper:
+         - connected_users()    → list of user IDs currently "connected"
+         - get_cursor(user_id)  → int (last processed transaction index)
+         - save_cursor(user_id, idx)
+         - get_feed(user_id)    → the transaction list from mock_feed.json
+         - get_credential(user_id)   → current credential dict
+         - save_credential(user_id, cred)
+         - get_notifications(user_id) → list of notification dicts
+         - push_notification(user_id, msg)
+         - sse_subscribers dict  → {user_id: list of asyncio.Queue}
+           (used in Phase 5 for pushing events to frontend)
+
+  2.3  Pre-seed store on startup: add "ada_001" and "bode_001" to connected_users.
+
+Deliverable: import store anywhere, call store.get_feed("ada_001"), get transactions back.
+
+
+PHASE 3 — Mock KYC + Credential Issuance
+------------------------------------------
+Goal: POST /api/kyc/verify issues a signed JWT credential and stores it.
+
+Steps:
+  3.1  routers/kyc.py — POST /api/kyc/verify
+         Request body: { bvn: str, nin: str, selfie_b64: str (ignored) }
+         Response: { verified: true, persona_id: str }
+         Behavior:
+           - wait 1.5 s (asyncio.sleep) to simulate a real check
+           - always return verified: true (mock)
+           - call credential_issuer.issue_identity_claims(persona_id)
+
+  3.2  services/credential_issuer.py — issue_identity_claims(user_id):
+         Builds a JWT payload (PyJWT, HS256, secret from env var JWT_SECRET):
+           {
+             "sub": user_id,
+             "claims": {
+               "identity_verified": true,
+               "bvn_validated": true,
+               "age_over_18": true,
+               "income_band":          { "value": "150k-300k", "state": "active" },
+               "repayment_reliability":{ "state": "active" }
+             },
+             "iat": now,
+             "exp": now + 30 days
+           }
+         Signs and stores via store.save_credential(user_id, {...})
+         Returns the signed token string.
+
+  3.3  routers/credentials.py — GET /api/credentials/{user_id}
+         Returns the stored credential dict (decoded, not raw JWT) for the UI to read.
+
+  3.4  Test manually via /docs:
+         POST /api/kyc/verify with body → should get back persona_id + token
+         GET  /api/credentials/ada_001  → should see the claims with state: "active"
+
+Deliverable: credential is issued and readable via API. States are all "active".
+
+
+PHASE 4 — Trigger Engine + State Machine
+-----------------------------------------
+Goal: given a list of transactions, the engine mutates credential state correctly.
+
+Steps:
+  4.1  services/trigger_engine.py — evaluate(user_id, transactions: list[dict]):
+         Pure function. Loops through transactions, checks rules in order:
+
+         Rule REPAYMENT_BOUNCE:
+           if txn["category"] == "loan_repayment" and txn.get("status") == "bounced":
+             → call credential_issuer.update_state(
+                 user_id, "repayment_reliability", "downgraded",
+                 reason="Loan repayment bounced on {date}"
+               )
+
+         Rule INCOME_DROP (check after processing all txns):
+           if no "income" category txn seen in last 35 days:
+             → update_state(user_id, "income_band", "under_review",
+                 reason="No income credit detected this month")
+
+         Rule INCOME_RESTORED:
+           if "income" txn present AND income_band.state == "under_review":
+             → update_state(user_id, "income_band", "active",
+                 reason="Income activity resumed")
+
+  4.2  services/credential_issuer.py — update_state(user_id, claim, new_state, reason):
+         - Load credential from store
+         - Update claims[claim]["state"] = new_state
+         - Re-sign JWT and save back to store
+         - Call notifier.notify(user_id, claim, new_state, reason)
+         - Return updated credential
+
+  4.3  Unit-test the trigger engine directly in Python (no server needed):
+         from services.trigger_engine import evaluate
+         from data import store
+         store.save_credential("ada_001", <seeded cred>)
+         evaluate("ada_001", [{"category":"loan_repayment","status":"bounced","date":"2026-07-05"}])
+         assert store.get_credential("ada_001")["claims"]["repayment_reliability"]["state"] == "downgraded"
+
+Deliverable: trigger rules work correctly on mock data. States mutate as expected.
+
+
+PHASE 5 — Open Banking Poller + SSE Push
+------------------------------------------
+Goal: poller runs every 5 min in the background, pushes state changes to frontend via SSE.
+
+Steps:
+  5.1  services/ob_poller.py — polling loop:
+         async def poll_user(user_id):
+           feed = store.get_feed(user_id)
+           cursor = store.get_cursor(user_id)
+           new_txns = feed["transactions"][cursor:]
+           if new_txns:
+               await trigger_engine.evaluate(user_id, new_txns)
+               store.save_cursor(user_id, len(feed["transactions"]))
+
+         async def polling_loop():
+           while True:
+               for uid in store.connected_users():
+                   await poll_user(uid)
+               await asyncio.sleep(int(os.getenv("POLL_INTERVAL_SECONDS", "300")))
+               # Dev tip: set POLL_INTERVAL_SECONDS=10 in .env to run every 10s
+
+  5.2  Start the loop on app startup via FastAPI lifespan:
+         @asynccontextmanager
+         async def lifespan(app):
+             task = asyncio.create_task(polling_loop())
+             yield
+             task.cancel()
+         app = FastAPI(lifespan=lifespan)
+
+  5.3  services/notifier.py — notify(user_id, claim, new_state, reason):
+         Builds notification dict: { claim, new_state, reason, message, timestamp }
+         Stores in store.push_notification(user_id, notif)
+         Pushes to all SSE queues for this user:
+           for q in store.sse_subscribers.get(user_id, []):
+               await q.put(notif)
+
+  5.4  routers/events.py — GET /api/events/stream?user_id=xxx (SSE):
+         Creates an asyncio.Queue, registers it in store.sse_subscribers[user_id]
+         Returns a StreamingResponse that yields from the queue as SSE:
+           data: <json>\n\n
+         Cleans up queue on disconnect.
+
+  5.5  Test: open /docs, hit GET /api/events/stream in a browser tab,
+         then hit POST /api/demo/inject (Phase 6) — event should appear in the stream.
+
+Deliverable: poller runs in background, state changes stream to frontend in real time.
+
+
+PHASE 6 — Demo Control Panel Endpoint
+---------------------------------------
+Goal: one API call skips the 5-min timer and fires a trigger instantly (for the demo).
+
+Steps:
+  6.1  routers/demo.py — POST /api/demo/inject:
+         Request body: { user_id: str, event_type: str }
+         Supported event_types:
+           "missed_repayment" → synthetic bounced loan_repayment txn
+           "income_drop"      → synthetic missing income signal
+           "income_restored"  → synthetic income credit
+
+         Builds the synthetic transaction dict and calls:
+           await trigger_engine.evaluate(user_id, [synthetic_txn])
+
+         Response: { "injected": true, "event_type": event_type, "user_id": user_id }
+
+  6.2  This endpoint is the backend half of the demo control panel button.
+       The frontend just calls POST /api/demo/inject — the SSE stream does the rest.
+
+Deliverable: curl or /docs call to /api/demo/inject causes immediate SSE event + credential state flip.
+
+
+PHASE 7 — Consent Recording
+-----------------------------
+Goal: record which claims a user approved for a given relying party.
+
+Steps:
+  7.1  routers/consent.py — POST /api/consent/grant:
+         Request body: { user_id: str, relying_party_id: str, claims: list[str] }
+         Stores consent record in store (add a consents dict to store.py)
+         Returns: { granted: true, claims: [...] }
+
+  7.2  GET /api/consent/{user_id} → returns all active consent records for a user.
+
+  7.3  POST /api/consent/revoke:
+         Request body: { user_id: str, relying_party_id: str }
+         Removes the consent record.
+
+  7.4  GET /api/credentials/{user_id}/verify?relying_party_id=xxx:
+         Checks consent exists, then returns only the approved claims (not all claims).
+         This is what the relying-party view calls to display the credential.
+
+Deliverable: relying party can only see claims the user consented to share.
+
+
+PHASE 8 — CORS + Frontend Wiring
+----------------------------------
+Goal: Vite frontend can talk to the FastAPI backend without CORS errors.
+
+Steps:
+  8.1  Add CORSMiddleware to main.py:
+         allow_origins=["http://localhost:5173"]  (Vite default port)
+         allow_methods=["*"]
+         allow_headers=["*"]
+
+  8.2  Add a .env file in openbanking/:
+         JWT_SECRET=foid-dev-secret-change-in-prod
+         POLL_INTERVAL_SECONDS=10
+
+  8.3  Read env vars in main.py via os.getenv() — no extra library needed.
+
+  8.4  Confirm from the frontend (or curl -H "Origin: http://localhost:5173"):
+         CORS preflight returns 200, response includes Access-Control-Allow-Origin.
+
+Deliverable: frontend calls work. No CORS errors in browser console.
+
+
+PHASE 9 — End-to-End Smoke Test
+---------------------------------
+Goal: walk the full demo script against the real backend before the frontend is polished.
+
+Checklist:
+  [ ] POST /api/kyc/verify          → credential issued, state "active"
+  [ ] GET  /api/credentials/ada_001 → shows all 5 claims
+  [ ] POST /api/consent/grant       → consent recorded
+  [ ] GET  /api/credentials/ada_001/verify?relying_party_id=wema_loan → shows only consented claims
+  [ ] Open SSE stream in browser (or curl --no-buffer /api/events/stream?user_id=ada_001)
+  [ ] POST /api/demo/inject {"user_id":"ada_001","event_type":"missed_repayment"}
+       → SSE stream receives event instantly
+       → GET /api/credentials/ada_001 now shows repayment_reliability.state = "downgraded"
+  [ ] GET  /api/notifications/ada_001 (add this simple GET to notifier router)
+       → notification with reason text is present
+  [ ] Wait for poller cycle (POLL_INTERVAL_SECONDS=10) with bode_001
+       → bounced txn in feed auto-triggers downgrade without manual inject
+
+Deliverable: full demo flow works via curl/docs. Frontend team can wire against this.
+
+
+RUNNING ORDER SUMMARY
+----------------------
+Phase 1  → server boots, all route stubs registered
+Phase 2  → mock data + in-memory store
+Phase 3  → KYC mock + JWT credential issuance
+Phase 4  → trigger rules + state machine (test without server)
+Phase 5  → poller loop + SSE push (the core mechanic)
+Phase 6  → demo control panel endpoint
+Phase 7  → consent grant/revoke/verify
+Phase 8  → CORS + env vars for frontend wiring
+Phase 9  → full end-to-end smoke test
+
+Start with Phase 1 now. Do not move to Phase 2 until the server boots cleanly.

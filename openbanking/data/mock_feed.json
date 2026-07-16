@@ -1,0 +1,137 @@
+{
+  "personas": [
+    {
+      "id": "ada_001",
+      "bvn": "12345678901",
+      "nin": "98765432100",
+      "full_name": "Ada Okonkwo",
+      "transactions": [
+        {
+          "id": "txn_ada_001",
+          "date": "2026-06-28",
+          "amount": 150000,
+          "type": "credit",
+          "description": "Salary - Acme Ltd",
+          "category": "income",
+          "status": "completed"
+        },
+        {
+          "id": "txn_ada_002",
+          "date": "2026-07-01",
+          "amount": -1000,
+          "type": "debit",
+          "description": "MTN Airtime",
+          "category": "utilities",
+          "status": "completed"
+        },
+        {
+          "id": "txn_ada_003",
+          "date": "2026-07-03",
+          "amount": -5000,
+          "type": "debit",
+          "description": "Bolt Rides",
+          "category": "transport",
+          "status": "completed"
+        },
+        {
+          "id": "txn_ada_004",
+          "date": "2026-07-05",
+          "amount": -25000,
+          "type": "debit",
+          "description": "Loan Repayment - Access Bank",
+          "category": "loan_repayment",
+          "status": "completed"
+        },
+        {
+          "id": "txn_ada_005",
+          "date": "2026-07-10",
+          "amount": -3500,
+          "type": "debit",
+          "description": "Shoprite - Groceries",
+          "category": "groceries",
+          "status": "completed"
+        },
+        {
+          "id": "txn_ada_006",
+          "date": "2026-07-15",
+          "amount": 20000,
+          "type": "credit",
+          "description": "Freelance Payment - Paystack",
+          "category": "income",
+          "status": "completed"
+        },
+        {
+          "id": "txn_ada_007",
+          "date": "2026-07-18",
+          "amount": -25000,
+          "type": "debit",
+          "description": "Loan Repayment - Access Bank",
+          "category": "loan_repayment",
+          "status": "bounced"
+        }
+      ]
+    },
+    {
+      "id": "bode_001",
+      "bvn": "22345678901",
+      "nin": "88765432100",
+      "full_name": "Babatunde Adewale",
+      "transactions": [
+        {
+          "id": "txn_bode_001",
+          "date": "2026-06-28",
+          "amount": 200000,
+          "type": "credit",
+          "description": "Salary - TechCorp Nigeria",
+          "category": "income",
+          "status": "completed"
+        },
+        {
+          "id": "txn_bode_002",
+          "date": "2026-07-01",
+          "amount": -2000,
+          "type": "debit",
+          "description": "Glo Airtime",
+          "category": "utilities",
+          "status": "completed"
+        },
+        {
+          "id": "txn_bode_003",
+          "date": "2026-07-04",
+          "amount": -50000,
+          "type": "debit",
+          "description": "Rent Payment - Lagos Properties",
+          "category": "housing",
+          "status": "completed"
+        },
+        {
+          "id": "txn_bode_004",
+          "date": "2026-07-05",
+          "amount": -30000,
+          "type": "debit",
+          "description": "Loan Repayment - GTBank",
+          "category": "loan_repayment",
+          "status": "completed"
+        },
+        {
+          "id": "txn_bode_005",
+          "date": "2026-07-12",
+          "amount": -30000,
+          "type": "debit",
+          "description": "Loan Repayment - GTBank",
+          "category": "loan_repayment",
+          "status": "bounced"
+        },
+        {
+          "id": "txn_bode_006",
+          "date": "2026-07-14",
+          "amount": -8000,
+          "type": "debit",
+          "description": "DSTV Subscription",
+          "category": "utilities",
+          "status": "completed"
+        }
+      ]
+    }
+  ]
+}

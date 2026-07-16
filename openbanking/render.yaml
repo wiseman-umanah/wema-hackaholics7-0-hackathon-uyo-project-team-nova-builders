@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: foid-openbanking
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    region: oregon          # change to frankfurt or singapore if closer to users
+    plan: free              # upgrade to starter for always-on + persistent disk
+
+    # ── Environment variables ──────────────────────────────────────────────
+    # Set JWT_SECRET and DATABASE_URL in the Render dashboard, not here.
+    # Values here are non-secret defaults visible in the repo.
+    envVars:
+      - key: POLL_INTERVAL_SECONDS
+        value: "300"              # 5 min in production
+
+      - key: FEED_APPEND_SECONDS
+        value: "30"               # feed simulator interval
+
+      - key: DB_ECHO
+        value: "false"
+
+    healthCheckPath: /health
+
+    # ── Persistent disk for SQLite (dev/staging only) ─────────────────────
+    # Remove this block when using Render Postgres in production.
+    disk:
+      name: foid-sqlite-data
+      mountPath: /data
+      sizeGB: 1
