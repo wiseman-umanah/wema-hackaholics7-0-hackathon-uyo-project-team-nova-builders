@@ -1,0 +1,21 @@
+import { Routes, Route, Navigate } from 'react-router-dom'
+import DashboardLayout from './layouts/DashboardLayout.tsx'
+import OverviewPage from './pages/dashboard/OverviewPage.tsx'
+import MyIdentityPage from './pages/dashboard/MyIdentityPage.tsx'
+
+export default function App() {
+  return (
+    <Routes>
+      {/* Redirect root to dashboard for now */}
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+      <Route path="/dashboard" element={<DashboardLayout />}>
+        <Route index element={<OverviewPage />} />
+        <Route path="identity" element={<MyIdentityPage />} />
+      </Route>
+
+      {/* Catch-all */}
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+    </Routes>
+  )
+}
