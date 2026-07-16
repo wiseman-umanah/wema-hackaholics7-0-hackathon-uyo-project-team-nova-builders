@@ -1,0 +1,29 @@
+# ── Python cache ──────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# ── Virtual environment ────────────────────────────────────────────────────────
+.venv/
+
+# ── Local database (SQLite dev file — Render uses Postgres) ───────────────────
+*.db
+*.sqlite3
+
+# ── Secrets — NEVER bake into the image ───────────────────────────────────────
+.env
+
+# ── uv artefacts ──────────────────────────────────────────────────────────────
+# uv.lock IS included — it pins exact versions for reproducible builds
+.uv-cache/
+
+# ── Dev tooling ───────────────────────────────────────────────────────────────
+stream_watch.py
+phases.txt
+.python-version
+
+# ── OS noise ──────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
