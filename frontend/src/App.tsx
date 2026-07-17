@@ -5,6 +5,9 @@ import MyIdentityPage from './pages/dashboard/MyIdentityPage.tsx'
 import VerificationCredentialsPage from './pages/dashboard/VerificationCredentialsPage.tsx'
 import ConnectedBankPage from './pages/dashboard/ConnectedBankPage.tsx'
 import ConsentPage from './pages/dashboard/ConsentPage.tsx'
+import BusinessLedger from './pages/dashboard/BusinessLedgerPage.tsx'
+import LedgerHistory from './pages/dashboard/LedgerHistoryPage.tsx'
+import AiCreditWallet from './pages/dashboard/AICreditWalletPage.tsx'
 
 export default function App() {
   return (
@@ -18,6 +21,9 @@ export default function App() {
         <Route path="credentials" element={<VerificationCredentialsPage />} />
         <Route path="banks" element={<ConnectedBankPage />} />
         <Route path="consents" element={<ConsentPage />} />
+        <Route path="ledger" element={<BusinessLedger />} />
+        <Route path="history" element={<LedgerHistory />} />
+        <Route path="wallet" element={<AiCreditWallet />} />
       </Route>
 
       {/* Catch-all */}

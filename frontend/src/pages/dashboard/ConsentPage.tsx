@@ -140,7 +140,7 @@ export default function ConsentPage() {
           <p className="text-neutral-500 mt-1 text-[13.5px]">Manage which apps and platforms can access your FOID identity data</p>
         </div>
         <button className="flex items-center gap-2 px-5 py-2.5 border border-neutral-200 rounded-full font-semibold text-[14px] text-neutral-800 bg-white hover:bg-neutral-50 transition-colors shrink-0">
-          <RemixIcon name="ri-newspaper-line" size={20} /> Export log
+          <RemixIcon name="ri-newspaper-line" size={20} /> Consent Policy
         </button>
       </div>
 
