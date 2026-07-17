@@ -1,72 +1,139 @@
 import {
-  AreaChart, Area, BarChart, Bar,
-  XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Cell,
+  ComposedChart, Area, BarChart, Bar,
+  XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  ResponsiveContainer,
 } from 'recharts'
-import '@/styles/overview.css'
+import Card from '@/components/Card'
+import RemixIcon from '@/components/RemixIcon'
+
+/* ── Brand colours (shared with charts) ────────────────────────────── */
+const BRAND      = '#c026d3'   // brand-500
+const BRAND_LITE = '#f5d0fe'   // brand-200
+const BRAND_DEEP = '#a21caf'   // brand-600
+const PINK       = '#e879f9'   // brand-300
 
 /* ── Mock data ──────────────────────────────────────────────────────── */
 const incomeExpenseData = [
-  { x: '0', income: 32000,  expense: 28000 },
-  { x: '1', income: 90000,  expense: 55000 },
-  { x: '2', income: 64000,  expense: 80000 },
-  { x: '3', income: 50000,  expense: 22000 },
-  { x: '4', income: 120000, expense: 95000 },
-  { x: '5', income: 75000,  expense: 45000 },
-  { x: '6', income: 129000, expense: 110000 },
+  { week: 'Week 1', income: 32000,  expense: 28000 },
+  { week: 'Week 2', income: 90000,  expense: 55000 },
+  { week: 'Week 3', income: 64000,  expense: 80000 },
+  { week: 'Week 4', income: 50000,  expense: 22000 },
+  { week: 'Week 5', income: 120000, expense: 95000 },
+  { week: 'Week 6', income: 75000,  expense: 45000 },
+  { week: 'Week 7', income: 129000, expense: 110000 },
 ]
 
+const CRED_MAX = 80
 const credentialUsageData = [
-  { platform: 'Wema',     pulls: 80 },
-  { platform: 'Carbon',   pulls: 35 },
-  { platform: 'Opay',     pulls: 68 },
-  { platform: 'Kuda',     pulls: 18 },
-  { platform: 'GT Bank',  pulls: 22 },
-]
+  { platform: 'Wema',    pulls: 80 },
+  { platform: 'Carbon',  pulls: 35 },
+  { platform: 'Opay',    pulls: 68 },
+  { platform: 'Kuda',    pulls: 18 },
+  { platform: 'GT Bank', pulls: 22 },
+].map(d => ({ ...d, remainder: CRED_MAX - d.pulls }))
 
 const spendingCategories = [
-  { label: 'Payroll',   pct: 46, color: '#9333ea' },
-  { label: 'Logistics', pct: 31, color: '#16a34a' },
-  { label: 'Other',     pct: 23, color: '#d97706' },
+  { label: 'Payroll',   pct: 46, color: '#c026d3' },
+  { label: 'Logistics', pct: 31, color: '#1e9e4a' },
+  { label: 'Other',     pct: 23, color: '#f5941c' },
 ]
 
-/* ── Naira formatter ────────────────────────────────────────────────── */
-const naira = (n: number) =>
-  '₦' + n.toLocaleString('en-NG')
+/* ── Helpers ────────────────────────────────────────────────────────── */
+const naira = (n: number) => '₦' + n.toLocaleString('en-NG')
 
-/* ── Donut SVG ──────────────────────────────────────────────────────── */
+/* ── Spending donut ─────────────────────────────────────────────────── */
 function SpendingDonut() {
-  const r = 40
-  const cx = 55
-  const cy = 55
-  const circumference = 2 * Math.PI * r
-  const segments = [
-    { pct: 46, color: '#9333ea', offset: 0 },
-    { pct: 31, color: '#16a34a', offset: 46 },
-    { pct: 23, color: '#d97706', offset: 77 },
+  const SIZE  = 200
+  const cx    = SIZE / 2
+  const cy    = SIZE / 2
+  const r     = 72
+  const SW    = 16          // stroke width
+  const GAP   = 12          // visual gap in degrees between segments
+  const circ  = 2 * Math.PI * r
+
+  // segments: [color, pct]
+  const segs = [
+    { color: '#c026d3', pct: 46 },  // Payroll — magenta
+    { color: '#f5941c', pct: 23 },  // Other   — orange
+    { color: '#1e9e4a', pct: 31 },  // Logistics — green
   ]
 
+  // Build cumulative offsets (in degrees), starting at -160° to match design
+  const START_DEG = -160
+  let cursor = START_DEG
+  const built = segs.map(s => {
+    const spanDeg  = (s.pct / 100) * 360 - GAP
+    const midDeg   = cursor + GAP / 2 + spanDeg / 2
+    const entry    = { ...s, startDeg: cursor + GAP / 2, spanDeg, midDeg }
+    cursor        += (s.pct / 100) * 360
+    return entry
+  })
+
+  // Convert degrees → SVG strokeDasharray for a circle
+  const toArc = (spanDeg: number) => {
+    const fraction = spanDeg / 360
+    const dash = fraction * circ
+    const gap  = circ - dash
+    return `${dash} ${gap}`
+  }
+
+  // Badge position on the arc midpoint
+  const badgePos = (midDeg: number) => {
+    const rad = (midDeg * Math.PI) / 180
+    return {
+      x: cx + r * Math.cos(rad),
+      y: cy + r * Math.sin(rad),
+    }
+  }
+
   return (
-    <svg width="110" height="110" viewBox="0 0 110 110">
-      {segments.map((s, i) => {
-        const dashLen = (s.pct / 100) * circumference
-        const gapLen  = circumference - dashLen
-        const rotate  = (s.offset / 100) * 360 - 90
-        return (
+    <div className="relative mx-auto" style={{ width: SIZE, height: SIZE }}>
+      <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`}>
+        {/* track */}
+        <circle cx={cx} cy={cy} r={r} fill="none" stroke="#ececec" strokeWidth={SW} />
+        {/* segments */}
+        {built.map((s, i) => (
           <circle
             key={i}
             cx={cx} cy={cy} r={r}
             fill="none"
             stroke={s.color}
-            strokeWidth="14"
-            strokeDasharray={`${dashLen} ${gapLen}`}
-            transform={`rotate(${rotate} ${cx} ${cy})`}
+            strokeWidth={SW}
+            strokeLinecap="round"
+            strokeDasharray={toArc(s.spanDeg)}
+            transform={`rotate(${s.startDeg} ${cx} ${cy})`}
           />
+        ))}
+      </svg>
+
+      {/* Centre ₦ symbol */}
+      <div className="absolute inset-0 flex items-center justify-center"
+        style={{ fontSize: 48, fontWeight: 800, color: '#c9c9c9', fontFamily: 'Georgia, serif', lineHeight: 1 }}>
+        ₦
+      </div>
+
+      {/* Floating badges on arc midpoints */}
+      {built.map((s, i) => {
+        const pos = badgePos(s.midDeg)
+        return (
+          <div
+            key={i}
+            className="absolute flex items-center justify-center rounded-full text-white font-bold"
+            style={{
+              width: 28, height: 28,
+              background: s.color,
+              fontSize: 11,
+              left: pos.x,
+              top:  pos.y,
+              transform: 'translate(-50%, -50%)',
+              boxShadow: '0 2px 5px rgba(0,0,0,0.18)',
+            }}
+          >
+            {s.pct}
+          </div>
         )
       })}
-      <text x={cx} y={cy - 6} textAnchor="middle" fontSize="11" fill="#6b7280">₦</text>
-      <text x={cx} y={cy + 8} textAnchor="middle" fontSize="11" fontWeight="700" fill="#111827">Total</text>
-    </svg>
+    </div>
   )
 }
 
@@ -75,239 +142,249 @@ interface StatCardProps {
   label: string
   value: string
   sub: string
-  subVariant?: 'default' | 'positive' | 'green'
+  subColor?: string
   icon: string
 }
 
-function StatCard({ label, value, sub, subVariant = 'default', icon }: StatCardProps) {
+function StatCard({ label, value, sub, subColor = 'text-neutral-400', icon }: StatCardProps) {
   return (
-    <div className="stat-card">
-      <div className="stat-card-icon"><i className={icon} /></div>
-      <div className="stat-label">{label}</div>
-      <div className={`stat-value ${value === 'Verified' ? 'verified' : ''}`}>{value}</div>
-      <div className={`stat-sub ${subVariant}`}>{sub}</div>
-    </div>
+    <Card>
+      {/* icon badge */}
+	  <div className='flex justify-between'>
+			<div>
+				<div className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wide mb-1">{label}</div>
+				<div className="text-2xl font-bold text-neutral-900 mb-1">{value}</div>
+				<div className={`text-[12px] font-medium ${subColor}`}>{sub}</div>
+			</div>
+			<div className="w-10 h-10 rounded-xl bg-brand-100 flex items-center justify-center">
+				{icon.startsWith('ri-')
+					? <RemixIcon name={icon} size={20} color="#c026d3" />
+					: <span style={{ fontSize: 18, fontWeight: 800, color: '#c026d3', lineHeight: 1 }}>{icon}</span>
+				}
+			</div>
+	  </div>
+      
+    </Card>
   )
 }
 
 /* ── Page ───────────────────────────────────────────────────────────── */
 export default function OverviewPage() {
   return (
-    <>
-      {/* Header */}
-      <div className="overview-header">
+    <div className="flex flex-col gap-4">
+
+      {/* ── Header ── */}
+      <div className="flex items-start justify-between">
         <div>
-          <h1 className="overview-title">Welcome back, Daniel</h1>
-          <p className="overview-subtitle">
-            Here's a snapshot of your identity, credentials, and business finances
-          </p>
+          <h1 className="text-[26px] font-bold tracking-tight text-neutral-900">Welcome back, Daniel</h1>
+          <p className="text-neutral-500 mt-1 text-[13.5px]">Here's a snapshot of your identity, credentials, and business finances</p>
         </div>
-        <button className="btn-connect-bank">
+        <button className="flex items-center gap-2 px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-full font-semibold text-[14px] transition-colors shrink-0">
           + Connect a Bank
         </button>
       </div>
 
-      {/* Row 1 — stat cards */}
-      <div className="stat-grid">
-        <StatCard
-          label="Connected Banks"
-          value="12,482"
-          sub="↗ GT Banks, Kuda +2 More"
-          subVariant="positive"
-          icon="ri-bank-line"
-        />
-        <StatCard
-          label="Identity Verification"
-          value="Verified"
-          sub="Tier 2 · Full KYC complete"
-          icon="ri-shield-check-line"
-        />
-        <StatCard
-          label="Active Credentials"
-          value="156"
-          sub="Shared across 6 platforms"
-          subVariant="green"
-          icon="ri-medal-line"
-        />
-        <StatCard
-          label="AI Credit Balance"
-          value="8420"
-          sub="Covers ~52 more days"
-          icon="ri-ai-generate"
-        />
+      {/* ── Row 1 stat cards ── */}
+      <div className="grid grid-cols-4 gap-4">
+        <StatCard label="Connected Banks"      value="12,482"          sub="↗ GT Banks, Kuda +2 More"          subColor="text-brand-500 font-semibold" icon="ri-bank-line" />
+        <StatCard label="Identity Verification" value="Verified"        sub="Tier 2 · Full KYC complete"        subColor="text-neutral-400"              icon="ri-shield-user-line" />
+        <StatCard label="Active Credentials"    value="156"             sub="Shared across 6 platforms"         subColor="text-green-600 font-semibold"  icon="ri-book-read-fill" />
+        <StatCard label="AI Credit Balance"     value="8420"            sub="Covers ~52 more days"              subColor="text-neutral-400"              icon="ri-quill-pen-fill" />
       </div>
 
-      {/* Row 2 — stat cards */}
-      <div className="stat-grid">
-        <StatCard
-          label="Monthly Income"
-          value={naira(2140500)}
-          sub="Per creator weekly"
-          icon="ri-money-naira-circle-line"
-        />
-        <StatCard
-          label="Monthly Expense"
-          value={naira(2140500)}
-          sub="Per creator weekly"
-          icon="ri-arrow-up-circle-line"
-        />
-        <StatCard
-          label="Estimated Taxes"
-          value={naira(412600)}
-          sub="Per creator weekly"
-          icon="ri-percent-line"
-        />
-        <StatCard
-          label="Verification Requests"
-          value="3"
-          sub="This week · 1 needs your action"
-          icon="ri-file-list-3-line"
-        />
+      {/* ── Row 2 stat cards ── */}
+      <div className="grid grid-cols-4 gap-4">
+        <StatCard label="Monthly Income"        value={naira(2140500)}  sub="Per creator weekly"                subColor="text-neutral-400"              icon="₦" />
+        <StatCard label="Monthly Expense"       value={naira(2140500)}  sub="Per creator weekly"                subColor="text-neutral-400"              icon="ri-hand-coin-line" />
+        <StatCard label="Estimated Taxes"       value={naira(412600)}   sub="Per creator weekly"                subColor="text-neutral-400"              icon="ri-percent-line" />
+        <StatCard label="Verification Requests" value="3"               sub="This week · 1 needs your action"  subColor="text-neutral-400"              icon="ri-profile-fill" />
       </div>
 
-      {/* Charts + credential card row */}
-      <div className="charts-row">
-        {/* Income vs expenses area chart */}
-        <div className="card">
-          <div className="card-title">Income vs. expenses</div>
-          <div className="card-sub">Last 14 days across all connected banks</div>
-          <ResponsiveContainer width="100%" height={220}>
-            <AreaChart data={incomeExpenseData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+      {/* ── Charts row ── */}
+      <div className="grid grid-cols-[1fr_450px] gap-7 py-4">
+        {/* Income vs expenses */}
+        <div className="bg-white border border-neutral-200 rounded-2xl p-5">
+          <div className="font-bold text-[15px] text-neutral-900 mb-0.5">Income vs. expenses</div>
+          <div className="text-[12px] text-neutral-400 mb-4">Last 14 days across all connected banks</div>
+          <ResponsiveContainer width="100%" height={380}>
+            <ComposedChart
+              data={incomeExpenseData}
+              margin={{ top: 4, right: 16, bottom: 4, left: 0 }}
+            >
               <defs>
                 <linearGradient id="gradIncome" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%"  stopColor="#9333ea" stopOpacity={0.25} />
-                  <stop offset="95%" stopColor="#9333ea" stopOpacity={0.02} />
+                  <stop offset="0%"   stopColor={BRAND}      stopOpacity={0.25} />
+                  <stop offset="100%" stopColor={BRAND}      stopOpacity={0.02} />
                 </linearGradient>
                 <linearGradient id="gradExpense" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%"  stopColor="#e879f9" stopOpacity={0.18} />
-                  <stop offset="95%" stopColor="#e879f9" stopOpacity={0.02} />
+                  <stop offset="0%"   stopColor={BRAND_LITE} stopOpacity={0.45} />
+                  <stop offset="100%" stopColor={BRAND_LITE} stopOpacity={0.02} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="x" tick={{ fontSize: 11, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#f4f4f5" vertical={false} />
+              <XAxis
+                dataKey="week"
+                tick={{ fontSize: 11, fill: '#a1a1aa' }}
+                axisLine={false} tickLine={false}
+              />
               <YAxis
-                tick={{ fontSize: 11, fill: '#9ca3af' }}
-                axisLine={false}
-                tickLine={false}
-                tickFormatter={(v: number) => `₦${v >= 1000 ? v / 1000 + 'k' : v}`}
+                domain={[0, 'dataMax + 20000']}
+                tick={{ fontSize: 11, fill: '#a1a1aa' }}
+                axisLine={false} tickLine={false}
+                tickFormatter={(v: number) => `₦${v >= 1000 ? Math.round(v / 1000) + 'k' : v}`}
+                width={56}
               />
               <Tooltip
-                formatter={(val) => [naira(Number(val)), '']}
-                contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
+                formatter={(val, name) => [naira(Number(val)), name === 'income' ? 'Income' : 'Expenses']}
+                contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e4e4e7' }}
               />
-              <Area type="monotone" dataKey="income"  stroke="#9333ea" strokeWidth={2} fill="url(#gradIncome)"  dot={{ r: 3, fill: '#9333ea' }} />
-              <Area type="monotone" dataKey="expense" stroke="#e879f9" strokeWidth={2} fill="url(#gradExpense)" dot={{ r: 3, fill: '#e879f9' }} strokeDasharray="5 3" />
-            </AreaChart>
+              <Area type="monotone" dataKey="income"  stroke={BRAND} strokeWidth={2} fill="url(#gradIncome)"
+                dot={{ r: 3, fill: '#fff', stroke: BRAND,      strokeWidth: 2 }}
+                activeDot={{ r: 4, fill: BRAND }}
+              />
+              <Area type="monotone" dataKey="expense" stroke={PINK}  strokeWidth={2} fill="url(#gradExpense)"
+                dot={{ r: 3, fill: '#fff', stroke: PINK,       strokeWidth: 2 }}
+                activeDot={{ r: 4, fill: PINK }}
+              />
+              <Legend
+                verticalAlign="bottom"
+                align="right"
+                iconType="circle"
+                iconSize={10}
+                wrapperStyle={{ fontSize: 12, paddingTop: 12 }}
+                formatter={(value) => (
+                  <span style={{ color: '#71717a' }}>
+                    {value === 'income' ? 'Income' : 'Expenses'}
+                  </span>
+                )}
+              />
+            </ComposedChart>
           </ResponsiveContainer>
-          <div className="chart-legend">
-            <div className="chart-legend-item">
-              <div className="chart-legend-dot" style={{ background: '#9333ea' }} />
-              Income
-            </div>
-            <div className="chart-legend-item">
-              <div className="chart-legend-dot" style={{ background: '#e879f9', opacity: 0.6 }} />
-              Expenses
-            </div>
-          </div>
         </div>
 
         {/* Credential card */}
-        <div className="card">
-          <div className="card-title">Your verification credential</div>
+        <div className="bg-white border border-neutral-200 rounded-2xl p-5 flex flex-col">
+          <div className="font-bold text-[15px] text-neutral-900 mb-4">Your verification credential</div>
+          <div className="h-px bg-neutral-100 -mx-5 mb-5" />
+          {/* ── Virtual card ── */}
+          <div className="flex flex-col flex-1 justify-between gap-3">
+			<div
+				className="relative rounded-2xl overflow-hidden p-5 min-h-[180px] flex flex-col justify-between"
+				style={{ background: '#7B61FF' }}
+			>
+				{/* noise texture */}
+				<div
+				className="absolute inset-0 pointer-events-none"
+				style={{ backgroundImage: 'url(/noise.png)', backgroundSize: '160px', opacity: 0.08 }}
+				/>
 
-          <div className="credential-card-wrap">
-            <div className="credential-card-bg-orb" />
-            <div className="credential-card-bg-orb2" />
+				{/* grid crosshatch overlay */}
+				<svg className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true" style={{ opacity: 0.12 }}>
+				<defs>
+					<pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+					<path d="M 24 0 L 0 0 0 24" fill="none" stroke="white" strokeWidth="0.5" />
+					</pattern>
+				</defs>
+				<rect width="100%" height="100%" fill="url(#grid)" />
+				</svg>
 
-            <div className="credential-card-logo">FOID</div>
-            <div className="credential-card-verified-badge">Verified</div>
+				{/* shape.png — organic blob, right side */}
+				<img
+				src="/shape.png"
+				alt=""
+				aria-hidden="true"
+				className="absolute right-0 top-0 h-full pointer-events-none select-none"
+				style={{ width: '55%', objectFit: 'cover', objectPosition: 'left center', opacity: 0.95 }}
+				/>
 
-            {/* Decorative SVG rings */}
-            <svg
-              style={{ position: 'absolute', right: 20, top: 20, opacity: 0.55 }}
-              width="110" height="110" viewBox="0 0 110 110"
-              aria-hidden="true"
-            >
-              <ellipse cx="55" cy="55" rx="50" ry="28" fill="none" stroke="#f59e0b" strokeWidth="8" transform="rotate(-30 55 55)" />
-              <ellipse cx="55" cy="55" rx="50" ry="28" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="5" transform="rotate(30 55 55)" />
-              <ellipse cx="55" cy="55" rx="32" ry="32" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="4" />
-            </svg>
+				{/* "Verified" mint badge — top right */}
+				<div className="absolute top-4 right-4 z-10">
+				<span
+					className="text-[11px] font-bold px-3 py-1 rounded-full"
+					style={{ background: '#4ade80', color: '#14532d' }}
+				>
+					Verified
+				</span>
+				</div>
 
-            <div className="credential-card-field-label">CREDENTIAL STATE</div>
-            <div className="credential-card-field-value">7654</div>
+				{/* Card content — layered above shape */}
+				<div className="relative z-10">
+				<div className="text-[11px] font-bold tracking-[2px] text-white/70 uppercase mb-3">FOID</div>
+				<div>
+					<div className="text-[10px] font-bold tracking-widest text-white/60 uppercase mb-0.5">Credit Score</div>
+					<div
+					className="text-[22px] font-extrabold text-white leading-none"
+					style={{ fontFamily: "'Neue Machina', sans-serif" }}
+					>
+					7654
+					</div>
+				</div>
+				</div>
 
-            <div className="credential-card-field-label">HOLDER</div>
-            <div className="credential-card-holder">Daniel A.</div>
-          </div>
+				<div className="relative z-10 mt-4">
+				<div className="text-[10px] font-bold tracking-widest text-white/60 uppercase mb-0.5">Holder</div>
+				<div className="text-[15px] font-semibold text-white">Daniel A.</div>
+				</div>
+			</div>
 
-          <button className="btn-view-foid-code">
-            <i className="ri-qr-code-line" /> View my FOID code
-          </button>
-
-          <div style={{ position: 'relative', height: 24 }}>
-            <div className="foid-fab">F</div>
-          </div>
+			{/* View FOID code */}
+			<button className="w-full mt-3 py-2.5 border border-neutral-200 rounded-xl text-[13.5px] font-semibold text-neutral-800 flex items-center justify-center gap-2 hover:bg-neutral-50 transition-colors">
+				<RemixIcon name="ri-qr-code-line font-normal" size={18} color="#18181b" />
+				View my FOID code
+			</button>
+		</div>
         </div>
-      </div>
 
-      {/* Bottom row — credential usage + spending breakdown */}
-      <div className="bottom-row">
-        {/* Bar chart: where credential is used */}
-        <div className="card">
-          <div className="card-title">Where your credential is used</div>
-          <div className="card-sub">Verification pulls by connected platforms</div>
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={credentialUsageData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-              <XAxis dataKey="platform" tick={{ fontSize: 11, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: '#9ca3af' }} axisLine={false} tickLine={false} domain={[0, 100]} />
-              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }} />
-              <Bar dataKey="pulls" radius={[5, 5, 0, 0]} maxBarSize={52}>
-                {credentialUsageData.map((entry, index) => (
-                  <Cell
-                    key={entry.platform}
-                    fill={index % 2 === 0 ? '#7c3aed' : '#e9d5ff'}
-                  />
-                ))}
-              </Bar>
+        {/* Credential usage bar chart */}
+        <div className="bg-white border border-neutral-200 rounded-2xl p-5">
+          <div className="font-bold text-[15px] text-neutral-900 mb-0.5">Where your credential is used</div>
+          <div className="text-[12px] text-neutral-400 mb-4">Verification pulls by connected platforms</div>
+          <ResponsiveContainer width="100%" height={380}>
+            <BarChart data={credentialUsageData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }} barSize={44} barCategoryGap="20%">
+              <CartesianGrid strokeDasharray="3 3" stroke="#f4f4f5" vertical={false} />
+              <XAxis dataKey="platform" tick={{ fontSize: 11, fill: '#a1a1aa' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: '#a1a1aa' }} axisLine={false} tickLine={false} domain={[0, CRED_MAX]} />
+              <Tooltip
+                formatter={(val, name) => name === 'remainder' ? null : [val, 'Pulls']}
+                contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e4e4e7' }}
+              />
+              {/* Solid bottom stack — actual pulls */}
+              <Bar dataKey="pulls" stackId="a" fill={BRAND_DEEP} radius={[0, 0, 4, 4]} />
+              {/* Faded top stack — remainder up to max */}
+              <Bar dataKey="remainder" stackId="a" fill={BRAND_LITE} radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Spending breakdown */}
-        <div className="card">
-          <div className="card-title">Spending breakdown</div>
-          <div className="card-sub">This month, by category</div>
+        <div className="bg-white border border-neutral-200 rounded-2xl p-5">
+          <div className="font-bold text-[15px] text-neutral-900 mb-0.5">Spending breakdown</div>
+          <div className="text-[12px] text-neutral-400 mb-4">This month, by category</div>
 
-          <div className="spending-donut-wrap">
-            <SpendingDonut />
-            <div style={{ fontSize: 11, color: 'var(--muted)', lineHeight: 1.4 }}>
-              {spendingCategories.map(c => (
-                <div key={c.label} style={{ marginBottom: 2 }}>
-                  <span style={{ color: c.color, fontWeight: 700 }}>{c.pct}%</span> {c.label}
-                </div>
-              ))}
-            </div>
-          </div>
+          {/* divider */}
+          <div className="h-px bg-neutral-100 -mx-5 mb-5" />
 
-          <div className="spending-legend">
-            {spendingCategories.map(c => (
-              <div className="legend-row" key={c.label}>
-                <span style={{ width: 60, fontSize: 13 }}>{c.label}</span>
-                <div className="legend-bar-track">
-                  <div
-                    className="legend-bar-fill"
-                    style={{ width: `${c.pct}%`, background: c.color }}
-                  />
+          <SpendingDonut />
+
+          <div className="flex flex-col gap-[18px] mt-6">
+            {(() => {
+              const max = Math.max(...spendingCategories.map(c => c.pct))
+              return spendingCategories.map(c => (
+                <div key={c.label} className="grid items-center gap-3" style={{ gridTemplateColumns: '84px 1fr' }}>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ background: c.color }} />
+                    <span className="text-[13.5px] font-semibold text-neutral-900">{c.label}</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-neutral-100 overflow-hidden">
+                    <div className="h-full rounded-full" style={{ width: `${(c.pct / max) * 100}%`, background: c.color }} />
+                  </div>
                 </div>
-                <span style={{ fontSize: 12, color: 'var(--muted)', width: 32, textAlign: 'right' }}>
-                  {c.pct}%
-                </span>
-              </div>
-            ))}
+              ))
+            })()}
           </div>
         </div>
       </div>
-    </>
+
+    </div>
   )
 }

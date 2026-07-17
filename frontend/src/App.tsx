@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import DashboardLayout from './layouts/DashboardLayout.tsx'
 import OverviewPage from './pages/dashboard/OverviewPage.tsx'
 import MyIdentityPage from './pages/dashboard/MyIdentityPage.tsx'
+import VerificationCredentialsPage from './pages/dashboard/VerificationCredentialsPage.tsx'
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
       <Route path="/dashboard" element={<DashboardLayout />}>
         <Route index element={<OverviewPage />} />
         <Route path="identity" element={<MyIdentityPage />} />
+        <Route path="credentials" element={<VerificationCredentialsPage />} />
       </Route>
 
       {/* Catch-all */}
