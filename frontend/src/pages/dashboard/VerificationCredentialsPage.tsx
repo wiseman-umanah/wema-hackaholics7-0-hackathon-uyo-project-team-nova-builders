@@ -116,18 +116,18 @@ export default function VerificationCredentialsPage() {
     <div className="flex flex-col gap-5">
 
       {/* ── Header ── */}
-      <div className="flex items-start justify-between">
-		<div>
-			<h1 className="text-[26px] font-bold tracking-tight text-neutral-900">Verification Credentials</h1>
-			<p className="text-neutral-500 mt-1 text-[13.5px]">Every credential generated from your FOID identity, and where it's been shared</p>
-		</div>
-		<button className="flex items-center gap-2 px-5 py-2.5 border border-neutral-200 rounded-full font-semibold text-[14px] text-neutral-800 bg-white hover:bg-neutral-50 transition-colors shrink-0">
-			<RemixIcon name="ri-download-2-line" size={20} /> Download Identity Summary
-		</button>
-	</div>
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+        <div>
+          <h1 className="text-[22px] md:text-[26px] font-bold tracking-tight text-neutral-900">Verification Credentials</h1>
+          <p className="text-neutral-500 mt-1 text-[13.5px]">Every credential generated from your FOID identity, and where it's been shared</p>
+        </div>
+        <button className="flex items-center gap-2 px-5 py-2.5 border border-neutral-200 rounded-full font-semibold text-[14px] text-neutral-800 bg-white hover:bg-neutral-50 transition-colors shrink-0 self-start">
+          <RemixIcon name="ri-download-2-line" size={20} /> Download Identity Summary
+        </button>
+      </div>
 
       {/* ── Stat cards ── */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="Active Credentials" value="6"       sub="Shared across 6 platforms"      subColor="text-neutral-400"             icon="ri-file-text-fill"         />
         <StatCard label="Shared With"        value="6 apps"  sub="Banks, loans & merchants"     subColor="text-neutral-400"             icon="ri-user-shared-2-fill" />
         <StatCard label="Expiring Soon"      value="1"       sub="Renew within 30 days"      subColor="text-green-600 font-semibold" icon="ri-alarm-warning-fill"  />
@@ -138,12 +138,14 @@ export default function VerificationCredentialsPage() {
       <div className="bg-white rounded-2xl overflow-hidden">
 
         {/* Toolbar */}
-        <div className="flex items-center gap-4 py-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 py-4">
           {/* Sliding-pill segmented control */}
+          <div className="overflow-x-auto w-full sm:w-auto">
             <SegmentedTabs value={filter} onChange={setFilter} tabs={TABS} />
+          </div>
 
           {/* Search */}
-          <div className="ml-auto relative w-[320px]">
+          <div className="sm:ml-auto relative w-full sm:w-[280px]">
             <RemixIcon
               name="ri-search-line"
               size={16}
@@ -160,8 +162,9 @@ export default function VerificationCredentialsPage() {
           </div>
         </div>
 
-        {/* Table */}
-        <table className="w-full text-left text-[16px] border-collapse">
+        {/* Table — horizontally scrollable on mobile */}
+        <div className="overflow-x-auto">
+        <table className="w-full text-left text-[16px] border-collapse min-w-[700px]">
           <thead>
             <tr className="bg-neutral-200">
               {['CREDENTIAL ID', 'SHARED WITH', 'SCOPE', 'ISSUED', 'EXPIRES', 'STATUS', 'ACTIONS'].map((col, i, arr) => (
@@ -221,6 +224,7 @@ export default function VerificationCredentialsPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
     </div>

@@ -134,18 +134,18 @@ export default function ConsentPage() {
     <div className="flex flex-col gap-5">
 
       {/* ── Header ── */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
-          <h1 className="text-[26px] font-bold tracking-tight text-neutral-900">Consent Requests</h1>
+          <h1 className="text-[22px] md:text-[26px] font-bold tracking-tight text-neutral-900">Consent Requests</h1>
           <p className="text-neutral-500 mt-1 text-[13.5px]">Manage which apps and platforms can access your FOID identity data</p>
         </div>
-        <button className="flex items-center gap-2 px-5 py-2.5 border border-neutral-200 rounded-full font-semibold text-[14px] text-neutral-800 bg-white hover:bg-neutral-50 transition-colors shrink-0">
+        <button className="flex items-center gap-2 px-5 py-2.5 border border-neutral-200 rounded-full font-semibold text-[14px] text-neutral-800 bg-white hover:bg-neutral-50 transition-colors shrink-0 self-start">
           <RemixIcon name="ri-newspaper-line" size={20} /> Consent Policy
         </button>
       </div>
 
       {/* ── Stat cards ── */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="Pending Requests"  value="2"  sub="Awaiting your approval"       subColor="text-neutral-400"             icon="ri-alert-fill"           />
         <StatCard label="Approved"          value="14" sub="Banks, loans & merchants"      subColor="text-neutral-400"             icon="ri-checkbox-circle-fill" />
         <StatCard label="Denied"            value="3"  sub="Access blocked"                subColor="text-neutral-400"             icon="ri-close-circle-fill"    />
@@ -156,11 +156,13 @@ export default function ConsentPage() {
       <div className="bg-white rounded-2xl overflow-hidden">
 
         {/* Toolbar */}
-        <div className="flex items-center gap-4 py-4">
-          <SegmentedTabs value={filter} onChange={setFilter} tabs={TABS} />
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 py-4">
+          <div className="overflow-x-auto w-full sm:w-auto">
+            <SegmentedTabs value={filter} onChange={setFilter} tabs={TABS} />
+          </div>
 
           {/* Search */}
-          <div className="ml-auto relative w-[320px]">
+          <div className="sm:ml-auto relative w-full sm:w-[280px]">
             <RemixIcon
               name="ri-search-line"
               size={16}
@@ -177,8 +179,9 @@ export default function ConsentPage() {
           </div>
         </div>
 
-        {/* Table */}
-        <table className="w-full text-left border-collapse">
+        {/* Table — horizontally scrollable on mobile */}
+        <div className="overflow-x-auto">
+        <table className="w-full text-left border-collapse min-w-[640px]">
           <thead>
             <tr className="bg-neutral-200">
               {['SHARED WITH', 'SCOPE', 'REQUESTED', 'EXPIRES', 'STATUS', 'ACTIONS'].map((col, i, arr) => (
@@ -235,6 +238,7 @@ export default function ConsentPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
     </div>

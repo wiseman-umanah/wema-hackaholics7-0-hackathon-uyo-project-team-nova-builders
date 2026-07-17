@@ -5,17 +5,17 @@ import StatCard from '@/components/StatCard'
 export default function AiCreditWallet() {
    return (
 	  <div className="flex flex-col gap-6">
-  
-		{/* ── Header ── */}
-		<div>
-		  <h1 className="text-[26px] font-bold tracking-tight text-neutral-900">AI Credit Wallet</h1>
-		  <p className="text-neutral-500 mt-1 text-[13.5px]">
-			No subscriptions — just pay-as-you-go credits for AI-powered features
-		  </p>
-		</div>
-  
-		{/* ── Stat cards ── */}
-		<div className="grid grid-cols-4 gap-4">
+	 
+	 {/* ── Header ── */}
+	 <div>
+	   <h1 className="text-[22px] md:text-[26px] font-bold tracking-tight text-neutral-900">AI Credit Wallet</h1>
+	   <p className="text-neutral-500 mt-1 text-[13.5px]">
+	  No subscriptions — just pay-as-you-go credits for AI-powered features
+	   </p>
+	 </div>
+	 
+	 {/* ── Stat cards ── */}
+	 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 		  <StatCard
 			label="Current Balance"
 			value="8,420"
@@ -47,9 +47,9 @@ export default function AiCreditWallet() {
 		</div>
 
 		{/* ── Balance and Usage Sections ── */}
-		<div className="grid grid-cols-3 gap-6">
+		<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 		  {/* Balance Card */}
-		  <div className="col-span-1">
+		  <div className="lg:col-span-1">
 			<div className="bg-gradient-to-br from-[#C800DE] to-[#9000A8] rounded-2xl p-6 text-white">
 			  <div className="flex items-center justify-between mb-4">
 				<span className="text-sm font-medium opacity-90">Your balance</span>
@@ -70,9 +70,10 @@ export default function AiCreditWallet() {
 		  </div>
 
 		  {/* Recent Usage */}
-		  <div className="col-span-2 bg-white rounded-2xl border border-neutral-200 p-6">
-			<h3 className="text-lg font-semibold text-neutral-900 mb-4">Recent usage</h3>
-			<table className="w-full">
+		  <div className="lg:col-span-2 bg-white rounded-2xl border border-neutral-200 p-6">
+		 <h3 className="text-lg font-semibold text-neutral-900 mb-4">Recent usage</h3>
+		 <div className="overflow-x-auto">
+		 <table className="w-full min-w-[400px]">
 			  <thead>
 				<tr className="text-left text-xs text-neutral-500 border-b border-neutral-200">
 				  <th className="pb-3 font-medium">MONTH</th>
@@ -103,13 +104,15 @@ export default function AiCreditWallet() {
 				</tr>
 			  </tbody>
 			</table>
-		  </div>
+			</div>
+			 </div>
 		</div>
 
 		{/* Purchase History */}
 		<div className="bg-white rounded-2xl border border-neutral-200 p-6">
-		  <h3 className="text-lg font-semibold text-neutral-900 mb-4">Purchase history</h3>
-		  <table className="w-full">
+			 <h3 className="text-lg font-semibold text-neutral-900 mb-4">Purchase history</h3>
+			 <div className="overflow-x-auto">
+			 <table className="w-full min-w-[500px]">
 			<thead>
 			  <tr className="text-left text-xs text-neutral-500 border-b border-neutral-200">
 				<th className="pb-3 font-medium">DATE</th>
@@ -149,7 +152,8 @@ export default function AiCreditWallet() {
 				<td className="py-3"><span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Paid</span></td>
 			  </tr>
 			</tbody>
-		  </table>
+			 </table>
+			 </div>
 		</div>
   
 	  </div>

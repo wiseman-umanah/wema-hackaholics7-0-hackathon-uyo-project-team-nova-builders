@@ -56,7 +56,7 @@ export default function SegmentedTabs<T extends string>({
           key={tab.key}
           ref={el => { btnRefs.current[i] = el }}
           onClick={() => onChange(tab.key)}
-          className="relative z-10 px-8 py-2 rounded-full text-[13px] font-medium transition-colors duration-150"
+          className="relative z-10 px-4 sm:px-8 py-2 rounded-full text-[13px] font-medium transition-colors duration-150 whitespace-nowrap"
           style={{
             color: value === tab.key ? '#18181b' : '#9a9a9a',
             fontWeight: value === tab.key ? 700 : 500,

@@ -124,14 +124,14 @@ export default function AiChat() {
 
   return (
     /* Fixed container — bottom-right corner, above everything */
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+    <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 flex flex-col items-end gap-3">
 
       {/* ── Chat panel ── */}
       {open && (
         <div
-          className="flex flex-col rounded-3xl overflow-hidden shadow-2xl"
+          className="flex flex-col rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl"
           style={{
-            width: 380,
+            width: 'min(380px, calc(100vw - 32px))',
             maxHeight: '82vh',
             background: '#fff',
             border: '1px solid #e4e4e7',
