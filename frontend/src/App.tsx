@@ -4,6 +4,7 @@ import OverviewPage from './pages/dashboard/OverviewPage.tsx'
 import MyIdentityPage from './pages/dashboard/MyIdentityPage.tsx'
 import VerificationCredentialsPage from './pages/dashboard/VerificationCredentialsPage.tsx'
 import ConnectedBankPage from './pages/dashboard/ConnectedBankPage.tsx'
+import ConsentPage from './pages/dashboard/ConsentPage.tsx'
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="identity" element={<MyIdentityPage />} />
         <Route path="credentials" element={<VerificationCredentialsPage />} />
         <Route path="banks" element={<ConnectedBankPage />} />
+        <Route path="consents" element={<ConsentPage />} />
       </Route>
 
       {/* Catch-all */}
