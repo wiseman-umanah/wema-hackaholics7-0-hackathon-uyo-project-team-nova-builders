@@ -10,12 +10,16 @@ import LedgerHistory from './pages/dashboard/LedgerHistoryPage.tsx'
 import AiCreditWallet from './pages/dashboard/AICreditWalletPage.tsx'
 import ReportsPage from './pages/dashboard/ReportsPage.tsx'
 import ProfileSettingsPage from './pages/dashboard/ProfileSettingsPage.tsx'
+import SignupPage from './pages/SignupPage.tsx'
 
 export default function App() {
   return (
     <Routes>
-      {/* Redirect root to dashboard for now */}
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      {/* Auth pages */}
+      <Route path="/signup" element={<SignupPage />} />
+
+      {/* Redirect root to signup */}
+      <Route path="/" element={<Navigate to="/signup" replace />} />
 
       <Route path="/dashboard" element={<DashboardLayout />}>
         <Route index element={<OverviewPage />} />
