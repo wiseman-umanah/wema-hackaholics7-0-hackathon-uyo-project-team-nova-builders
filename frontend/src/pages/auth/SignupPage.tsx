@@ -1,21 +1,61 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../contexts/AuthContext'
 
 export default function SignupPage() {
+  const navigate = useNavigate()
+  const { signup, isAuthenticated } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm,  setShowConfirm]  = useState(false)
   const [agreed, setAgreed]             = useState(false)
+  const [error, setError]               = useState('')
   const [form, setForm] = useState({
     firstName: '', lastName: '', middleName: '',
     nin: '', email: '', password: '', confirmPassword: '',
   })
 
+  // Redirect if already authenticated
+  if (isAuthenticated) {
+    navigate('/dashboard', { replace: true })
+  }
+
   const set = (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('signup →', form, { agreed })
+    setError('')
+
+    // Basic validation
+    if (!agreed) {
+      setError('You must agree to the Terms of Service and Privacy Policy')
+      return
+    }
+
+    if (form.password !== form.confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+
+    if (form.password.length < 6) {
+      setError('Password must be at least 6 characters')
+      return
+    }
+
+    const success = await signup({
+      firstName: form.firstName,
+      lastName: form.lastName,
+      middleName: form.middleName || undefined,
+      nin: form.nin,
+      email: form.email,
+      password: form.password,
+    })
+
+    if (success) {
+      navigate('/dashboard')
+    } else {
+      setError('An account with this email already exists')
+    }
   }
 
   return (
@@ -80,6 +120,12 @@ export default function SignupPage() {
             Verify your identity once. Securely connect your bank accounts and access
             fintech platforms instantly with a single click.
           </p>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-4">
+              <p className="text-[13px] text-red-600">{error}</p>
+            </div>
+          )}
 
           <form
             onSubmit={handleSubmit}

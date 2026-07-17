@@ -10,8 +10,9 @@ import LedgerHistory from './pages/dashboard/LedgerHistoryPage.tsx'
 import AiCreditWallet from './pages/dashboard/AICreditWalletPage.tsx'
 import ReportsPage from './pages/dashboard/ReportsPage.tsx'
 import ProfileSettingsPage from './pages/dashboard/ProfileSettingsPage.tsx'
-import SignupPage from './pages/SignupPage.tsx'
-import LoginPage from './pages/LoginPage.tsx'
+import SignupPage from './pages/auth/SignupPage.tsx'
+import LoginPage from './pages/auth/LoginPage.tsx'
+import ProtectedRoute from './components/ProtectedRoute.tsx'
 
 export default function App() {
   return (
@@ -23,7 +24,11 @@ export default function App() {
       {/* Redirect root to login */}
       <Route path="/" element={<Navigate to="/login" replace />} />
 
-      <Route path="/dashboard" element={<DashboardLayout />}>
+      <Route path="/dashboard" element={
+        <ProtectedRoute>
+          <DashboardLayout />
+        </ProtectedRoute>
+      }>
         <Route index element={<OverviewPage />} />
         <Route path="identity" element={<MyIdentityPage />} />
         <Route path="credentials" element={<VerificationCredentialsPage />} />

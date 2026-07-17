@@ -35,3 +35,14 @@ export interface Notification {
   timestamp: string
   read: boolean
 }
+
+export interface User {
+  id: string
+  firstName: string
+  lastName: string
+  middleName?: string
+  nin: string
+  email: string
+  password: string
+  createdAt: string
+}

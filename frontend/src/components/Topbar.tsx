@@ -1,6 +1,11 @@
 import RemixIcon from './RemixIcon'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function Topbar() {
+  const { user } = useAuth()
+
+  const userDisplayName = user ? `${user.firstName} ${user.lastName}` : 'User'
+
   return (
     <header className="shrink-0 bg-white border-neutral-100 border-b font-bold flex items-center text-[16px] px-8 py-3.5 gap-4">
       {/* Search */}
@@ -31,11 +36,11 @@ export default function Topbar() {
         <div className="flex items-center gap-2 pl-4 py-1 border-neutral-100 border-l bg-white">
           <img
             src="/avatar.png"
-            alt="Alex Sterling"
+            alt={userDisplayName}
             className="w-10 h-10 rounded-full object-cover"
           />
           <div className="leading-tight gap-1.5">
-            <div className="text-[16px] font-semibold text-neutral-900">Alex Sterling</div>
+            <div className="text-[16px] font-semibold text-neutral-900">{userDisplayName}</div>
             <div className="bg-[#fae8ff] max-w-max px-4 rounded-full py-1.5 text-[12px] font-bold text-brand-500">Verified</div>
           </div>
         </div>

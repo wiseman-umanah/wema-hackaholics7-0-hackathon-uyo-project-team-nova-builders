@@ -1,16 +1,33 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../contexts/AuthContext'
 
 export default function LoginPage() {
+  const navigate = useNavigate()
+  const { login, isAuthenticated } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState('')
   const [form, setForm] = useState({ email: '', password: '' })
+
+  // Redirect if already authenticated
+  if (isAuthenticated) {
+    navigate('/dashboard', { replace: true })
+  }
 
   const set = (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('login →', form)
+    setError('')
+
+    const success = await login(form.email, form.password)
+
+    if (success) {
+      navigate('/dashboard')
+    } else {
+      setError('Invalid email or password')
+    }
   }
 
   return (
@@ -71,6 +88,12 @@ export default function LoginPage() {
             Access your financial identity, manage consent, and<br />
             view your AI-powered ledger.
           </p>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-4">
+              <p className="text-[13px] text-red-600">{error}</p>
+            </div>
+          )}
 
           {/* Form */}
           <form
