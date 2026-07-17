@@ -8,6 +8,7 @@ import ConsentPage from './pages/dashboard/ConsentPage.tsx'
 import BusinessLedger from './pages/dashboard/BusinessLedgerPage.tsx'
 import LedgerHistory from './pages/dashboard/LedgerHistoryPage.tsx'
 import AiCreditWallet from './pages/dashboard/AICreditWalletPage.tsx'
+import ReportsPage from './pages/dashboard/ReportsPage.tsx'
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="ledger" element={<BusinessLedger />} />
         <Route path="history" element={<LedgerHistory />} />
         <Route path="wallet" element={<AiCreditWallet />} />
+        <Route path="reports" element={<ReportsPage />} />
       </Route>
 
       {/* Catch-all */}

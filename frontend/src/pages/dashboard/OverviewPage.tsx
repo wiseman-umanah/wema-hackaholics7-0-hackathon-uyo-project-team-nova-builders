@@ -1,27 +1,15 @@
 import {
-  ComposedChart, Area, BarChart, Bar,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  BarChart, Bar,
+  XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer,
 } from 'recharts'
 import RemixIcon from '@/components/RemixIcon'
 import StatCard from '@/components/StatCard'
+import IncomeExpenseChart from '@/components/IncomeExpenseChart'
 
-/* ── Brand colours (shared with charts) ────────────────────────────── */
-const BRAND      = '#c026d3'   // brand-500
+/* ── Brand colours ──────────────────────────────────────────────────── */
 const BRAND_LITE = '#f5d0fe'   // brand-200
 const BRAND_DEEP = '#a21caf'   // brand-600
-const PINK       = '#e879f9'   // brand-300
-
-/* ── Mock data ──────────────────────────────────────────────────────── */
-const incomeExpenseData = [
-  { week: 'Week 1', income: 32000,  expense: 28000 },
-  { week: 'Week 2', income: 90000,  expense: 55000 },
-  { week: 'Week 3', income: 64000,  expense: 80000 },
-  { week: 'Week 4', income: 50000,  expense: 22000 },
-  { week: 'Week 5', income: 120000, expense: 95000 },
-  { week: 'Week 6', income: 75000,  expense: 45000 },
-  { week: 'Week 7', income: 129000, expense: 110000 },
-]
 
 const CRED_MAX = 80
 const credentialUsageData = [
@@ -171,65 +159,7 @@ export default function OverviewPage() {
 
       {/* ── Charts row ── */}
       <div className="grid grid-cols-[1fr_450px] gap-7 py-4">
-        {/* Income vs expenses */}
-        <div className="bg-white border border-neutral-200 rounded-2xl p-5">
-          <div className="font-bold text-[15px] text-neutral-900 mb-0.5">Income vs. expenses</div>
-          <div className="text-[12px] text-neutral-400 mb-4">Last 14 days across all connected banks</div>
-          <ResponsiveContainer width="100%" height={380}>
-            <ComposedChart
-              data={incomeExpenseData}
-              margin={{ top: 4, right: 16, bottom: 4, left: 0 }}
-            >
-              <defs>
-                <linearGradient id="gradIncome" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%"   stopColor={BRAND}      stopOpacity={0.25} />
-                  <stop offset="100%" stopColor={BRAND}      stopOpacity={0.02} />
-                </linearGradient>
-                <linearGradient id="gradExpense" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%"   stopColor={BRAND_LITE} stopOpacity={0.45} />
-                  <stop offset="100%" stopColor={BRAND_LITE} stopOpacity={0.02} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f4f4f5" vertical={false} />
-              <XAxis
-                dataKey="week"
-                tick={{ fontSize: 11, fill: '#a1a1aa' }}
-                axisLine={false} tickLine={false}
-              />
-              <YAxis
-                domain={[0, 'dataMax + 20000']}
-                tick={{ fontSize: 11, fill: '#a1a1aa' }}
-                axisLine={false} tickLine={false}
-                tickFormatter={(v: number) => `₦${v >= 1000 ? Math.round(v / 1000) + 'k' : v}`}
-                width={56}
-              />
-              <Tooltip
-                formatter={(val, name) => [naira(Number(val)), name === 'income' ? 'Income' : 'Expenses']}
-                contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e4e4e7' }}
-              />
-              <Area type="monotone" dataKey="income"  stroke={BRAND} strokeWidth={2} fill="url(#gradIncome)"
-                dot={{ r: 3, fill: '#fff', stroke: BRAND,      strokeWidth: 2 }}
-                activeDot={{ r: 4, fill: BRAND }}
-              />
-              <Area type="monotone" dataKey="expense" stroke={PINK}  strokeWidth={2} fill="url(#gradExpense)"
-                dot={{ r: 3, fill: '#fff', stroke: PINK,       strokeWidth: 2 }}
-                activeDot={{ r: 4, fill: PINK }}
-              />
-              <Legend
-                verticalAlign="bottom"
-                align="right"
-                iconType="circle"
-                iconSize={10}
-                wrapperStyle={{ fontSize: 12, paddingTop: 12 }}
-                formatter={(value) => (
-                  <span style={{ color: '#71717a' }}>
-                    {value === 'income' ? 'Income' : 'Expenses'}
-                  </span>
-                )}
-              />
-            </ComposedChart>
-          </ResponsiveContainer>
-        </div>
+        <IncomeExpenseChart />
 
         {/* Credential card */}
         <div className="bg-white border border-neutral-200 rounded-2xl p-5 flex flex-col">
