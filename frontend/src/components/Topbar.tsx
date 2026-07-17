@@ -8,16 +8,14 @@ export default function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
 
   return (
     <header className="shrink-0 bg-white border-neutral-100 border-b font-bold flex items-center text-[16px] px-4 md:px-8 py-3.5 gap-4">
-      {/* Mobile menu button */}
-      {onMenuClick && (
-        <button
-          onClick={onMenuClick}
-          aria-label="Open menu"
-          className="md:hidden p-2 rounded-lg hover:bg-neutral-100 transition-colors"
-        >
-          <RemixIcon name="ri-menu-line" size={24} color="#18181b" clickable />
-        </button>
-      )}
+      {/* Mobile menu button — always shown on mobile */}
+      <button
+        onClick={onMenuClick}
+        aria-label="Open menu"
+        className="md:hidden p-2 rounded-lg hover:bg-neutral-100 transition-colors shrink-0"
+      >
+        <RemixIcon name="ri-menu-line" size={24} color="#18181b" clickable />
+      </button>
 
       {/* Search - hidden on mobile */}
       <div className="relative flex-1 max-w-[500px] hidden md:flex justify-center py-2">

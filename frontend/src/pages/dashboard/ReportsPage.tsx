@@ -45,14 +45,14 @@ export default function ReportsPage() {
     <div className="flex flex-col gap-5">
 
       {/* ── Header ── */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
-          <h1 className="text-[26px] font-bold tracking-tight text-neutral-900">Reports & Insights</h1>
+          <h1 className="text-[22px] md:text-[26px] font-bold tracking-tight text-neutral-900">Reports & Insights</h1>
           <p className="text-neutral-500 mt-1 text-[13.5px]">
             A closer look at your cash flow, spending patterns, and tax position
           </p>
         </div>
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-3 shrink-0 flex-wrap">
           <button className="flex items-center gap-2 px-5 py-2.5 border border-neutral-200 rounded-full font-semibold text-[13px] text-neutral-800 bg-white hover:bg-neutral-50 transition-colors">
             <RemixIcon name="ri-file-text-line" size={16} color="#18181b" />
             Export CSV
@@ -65,7 +65,7 @@ export default function ReportsPage() {
       </div>
 
       {/* ── Stat cards ── */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Net Cash Flow"
           value="2,614"
@@ -97,7 +97,7 @@ export default function ReportsPage() {
       </div>
 
       {/* ── Charts row ── */}
-      <div className="grid grid-cols-[1fr_380px] gap-5">
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-5">
 
         {/* Income vs expenses — area chart */}
         <div className="bg-white border border-neutral-200 rounded-2xl p-5">
@@ -179,7 +179,8 @@ export default function ReportsPage() {
         <div className="px-6 py-5 border-b border-neutral-100">
           <div className="font-bold text-[15px] text-neutral-900">Monthly summary</div>
         </div>
-        <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto">
+        <table className="w-full text-left border-collapse min-w-[560px]">
           <thead>
             <tr className="border-b border-neutral-100">
               {['MONTH', 'INCOME', 'EXPENSES', 'NET', 'EST. TAX', 'ACTIONS'].map((col, i, arr) => (
@@ -214,6 +215,7 @@ export default function ReportsPage() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
 
     </div>

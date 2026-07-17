@@ -142,7 +142,7 @@ export default function OverviewPage() {
       </div>
 
       {/* ── Row 1 stat cards ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="Connected Banks"      value="12,482"          sub="↗ GT Banks, Kuda +2 More"          subColor="text-brand-500 font-semibold" icon="ri-bank-line" />
         <StatCard label="Identity Verification" value="Verified"        sub="Tier 2 · Full KYC complete"        subColor="text-neutral-400"              icon="ri-shield-user-line" />
         <StatCard label="Active Credentials"    value="156"             sub="Shared across 6 platforms"         subColor="text-green-600 font-semibold"  icon="ri-book-read-fill" />
@@ -150,7 +150,7 @@ export default function OverviewPage() {
       </div>
 
       {/* ── Row 2 stat cards ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="Monthly Income"        value={naira(2140500)}  sub="Per creator weekly"                subColor="text-neutral-400"              icon="₦" />
         <StatCard label="Monthly Expense"       value={naira(2140500)}  sub="Per creator weekly"                subColor="text-neutral-400"              icon="ri-hand-coin-line" />
         <StatCard label="Estimated Taxes"       value={naira(412600)}   sub="Per creator weekly"                subColor="text-neutral-400"              icon="ri-percent-line" />

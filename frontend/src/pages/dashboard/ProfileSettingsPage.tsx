@@ -125,14 +125,14 @@ export default function ProfileSettingsPage() {
     <div className="flex flex-col gap-6 min-h-full">
 
       {/* ── Page header ── */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-neutral-900">Profile &amp; Settings</h1>
           <p className="text-[13px] text-neutral-400 mt-1">
             Manage your personal information, security, and how FOID's AI helps you
           </p>
         </div>
-        <div className="flex gap-3 shrink-0">
+        <div className="flex gap-3 shrink-0 flex-wrap">
           <button className="flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-4 py-2 text-[13px] font-semibold text-neutral-800 hover:bg-neutral-50 transition-colors">
             <RemixIcon name="ri-file-excel-2-line" size={16} color="#52525b" />
             Export CSV
@@ -145,7 +145,7 @@ export default function ProfileSettingsPage() {
       </div>
 
       {/* ── Stat cards row ── */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Total Entries"
           value="2,614"
@@ -173,12 +173,12 @@ export default function ProfileSettingsPage() {
       </div>
 
       {/* ── Two-column section ── */}
-      <div className="grid grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
         {/* ── Personal information ── */}
         <div className="bg-white rounded-2xl border border-neutral-100 p-6 shadow-sm">
           <h2 className="text-[15px] font-bold text-neutral-900 mb-5">Personal information</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="First name" />
             <Field label="Last name" />
             <Field label="Middle name" />
