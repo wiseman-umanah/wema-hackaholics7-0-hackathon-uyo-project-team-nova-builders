@@ -11,15 +11,17 @@ import AiCreditWallet from './pages/dashboard/AICreditWalletPage.tsx'
 import ReportsPage from './pages/dashboard/ReportsPage.tsx'
 import ProfileSettingsPage from './pages/dashboard/ProfileSettingsPage.tsx'
 import SignupPage from './pages/SignupPage.tsx'
+import LoginPage from './pages/LoginPage.tsx'
 
 export default function App() {
   return (
     <Routes>
       {/* Auth pages */}
       <Route path="/signup" element={<SignupPage />} />
+      <Route path="/login" element={<LoginPage />} />
 
-      {/* Redirect root to signup */}
-      <Route path="/" element={<Navigate to="/signup" replace />} />
+      {/* Redirect root to login */}
+      <Route path="/" element={<Navigate to="/login" replace />} />
 
       <Route path="/dashboard" element={<DashboardLayout />}>
         <Route index element={<OverviewPage />} />
