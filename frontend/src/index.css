@@ -1,6 +1,5 @@
-/* ─── Imports must come first per CSS spec ──────────────────────────── */
+/* ─── Tailwind v4 entry ──────────────────────────────────────────────── */
 @import "tailwindcss";
-@import 'remixicon/fonts/remixicon.css';
 
 /* ─── Brand colour tokens ───────────────────────────────────────────── */
 @theme {

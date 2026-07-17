@@ -9,6 +9,7 @@ import BusinessLedger from './pages/dashboard/BusinessLedgerPage.tsx'
 import LedgerHistory from './pages/dashboard/LedgerHistoryPage.tsx'
 import AiCreditWallet from './pages/dashboard/AICreditWalletPage.tsx'
 import ReportsPage from './pages/dashboard/ReportsPage.tsx'
+import ProfileSettingsPage from './pages/dashboard/ProfileSettingsPage.tsx'
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="history" element={<LedgerHistory />} />
         <Route path="wallet" element={<AiCreditWallet />} />
         <Route path="reports" element={<ReportsPage />} />
+        <Route path="settings" element={<ProfileSettingsPage />} />
       </Route>
 
       {/* Catch-all */}
