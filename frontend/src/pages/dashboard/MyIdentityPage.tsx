@@ -1,4 +1,5 @@
 import RemixIcon from '@/components/RemixIcon'
+import { useCredential } from '@/contexts/CredentialContext'
 
 /* ── Trust ring SVG ─────────────────────────────────────────────────── */
 function TrustRing({ pct }: { pct: number }) {
@@ -48,8 +49,19 @@ const LINKED_ACCOUNTS = [
   { name: 'GT Bank',   date: 'Linked 12 Jun 2026', logo: '/GTCO.jpg' },
 ]
 
+/* ── State meta ─────────────────────────────────────────────────────── */
+const STATE_META: Record<string, { label: string; color: string; bg: string }> = {
+  active:       { label: 'Fully verified · Tier 2', color: '#a21caf', bg: '#fae8ff' },
+  under_review: { label: 'Under Review · Tier 2',   color: '#a16207', bg: '#fef9c3' },
+  downgraded:   { label: 'Downgraded · Tier 1',     color: '#c2410c', bg: '#fff7ed' },
+  revoked:      { label: 'Revoked',                 color: '#dc2626', bg: '#fee2e2' },
+}
+
 /* ── Page ───────────────────────────────────────────────────────────── */
 export default function MyIdentityPage() {
+  const { credential } = useCredential()
+  const stateMeta = STATE_META[credential.state]
+
   return (
     <div className="flex flex-col gap-5">
 
@@ -76,8 +88,11 @@ export default function MyIdentityPage() {
         {/* Name + badge */}
         <div className="text-center md:text-left">
           <div className="text-[20px] md:text-[22px] font-bold text-neutral-900 mb-2">Daniel Afolabi</div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-100 text-brand-600 text-[13px] font-semibold">
-            Tier 2 · Fully verified
+          <span
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[13px] font-semibold"
+            style={{ background: stateMeta.bg, color: stateMeta.color }}
+          >
+            {stateMeta.label}
           </span>
         </div>
 

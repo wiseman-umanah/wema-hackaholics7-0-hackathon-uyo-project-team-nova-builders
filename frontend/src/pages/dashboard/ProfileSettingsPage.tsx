@@ -147,28 +147,32 @@ export default function ProfileSettingsPage() {
       {/* ── Stat cards row ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          label="Total Entries"
-          value="2,614"
-          sub="Since your account began"
-          icon="ri-list-check-2"
+          label="Account Tier"
+          value="Tier 2"
+          sub="Full KYC complete"
+          subColor="text-neutral-400"
+          icon="ri-shield-star-fill"
         />
         <StatCard
-          label="Auto-categorised"
-          value="97.1%"
-          sub="Without manual edits"
-          icon="ri-arrow-right-up-line"
+          label="Identity Documents"
+          value="3 / 4"
+          sub="1 document not linked"
+          subColor="text-neutral-400"
+          icon="ri-profile-fill"
         />
         <StatCard
-          label="Exports This Month"
-          value="9"
-          sub="CSV & PDF combined"
-          icon="ri-bar-chart-grouped-line"
+          label="Active Consents"
+          value="11"
+          sub="Across 6 platforms"
+          subColor="text-neutral-400"
+          icon="ri-checkbox-circle-fill"
         />
         <StatCard
-          label="Estimated Tax"
-          value="Unlimited"
-          sub="Full history kept, always"
-          icon="ri-wallet-line"
+          label="Last Login"
+          value="Just now"
+          sub="2FA · Biometric active"
+          subColor="text-green-600 font-semibold"
+          icon="ri-lock-2-fill"
         />
       </div>
 

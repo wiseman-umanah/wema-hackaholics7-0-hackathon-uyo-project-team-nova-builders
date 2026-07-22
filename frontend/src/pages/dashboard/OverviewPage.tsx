@@ -6,6 +6,8 @@ import {
 import RemixIcon from '@/components/RemixIcon'
 import StatCard from '@/components/StatCard'
 import IncomeExpenseChart from '@/components/IncomeExpenseChart'
+import { useCredential } from '@/contexts/CredentialContext'
+import type { CredentialState } from '@/types/foid'
 
 /* ── Brand colours ──────────────────────────────────────────────────── */
 const BRAND_LITE = '#f5d0fe'   // brand-200
@@ -125,8 +127,19 @@ function SpendingDonut() {
   )
 }
 
+/* ── State badge colours ────────────────────────────────────────────── */
+const STATE_META: Record<CredentialState, { label: string; color: string; bg: string }> = {
+  active:       { label: 'Active',       color: '#15803d', bg: '#dcfce7' },
+  under_review: { label: 'Under Review', color: '#a16207', bg: '#fef9c3' },
+  downgraded:   { label: 'Downgraded',   color: '#c2410c', bg: '#fff7ed' },
+  revoked:      { label: 'Revoked',      color: '#dc2626', bg: '#fee2e2' },
+}
+
 /* ── Page ───────────────────────────────────────────────────────────── */
 export default function OverviewPage() {
+  const { credential } = useCredential()
+  const stateMeta = STATE_META[credential.state]
+
   return (
     <div className="flex flex-col gap-4">
 
@@ -196,13 +209,13 @@ export default function OverviewPage() {
 				style={{ width: '55%', objectFit: 'cover', objectPosition: 'left center', opacity: 0.95 }}
 				/>
 
-				{/* "Verified" mint badge — top right */}
+				{/* Credential state badge — top right */}
 				<div className="absolute top-4 right-4 z-10">
 				<span
 					className="text-[11px] font-bold px-3 py-1 rounded-full"
-					style={{ background: '#4ade80', color: '#14532d' }}
+					style={{ background: stateMeta.bg, color: stateMeta.color }}
 				>
-					Verified
+					{stateMeta.label}
 				</span>
 				</div>
 
@@ -210,12 +223,12 @@ export default function OverviewPage() {
 				<div className="relative z-10">
 				<div className="text-[11px] font-bold tracking-[2px] text-white/70 uppercase mb-3">FOID</div>
 				<div>
-					<div className="text-[10px] font-bold tracking-widest text-white/60 uppercase mb-0.5">Credit Score</div>
+					<div className="text-[10px] font-bold tracking-widest text-white/60 uppercase mb-0.5">Credential State</div>
 					<div
-					className="text-[22px] font-extrabold text-white leading-none"
+					className="text-[18px] font-extrabold text-white leading-none"
 					style={{ fontFamily: "'Neue Machina', sans-serif" }}
 					>
-					7654
+					{stateMeta.label}
 					</div>
 				</div>
 				</div>

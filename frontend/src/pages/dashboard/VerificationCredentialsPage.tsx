@@ -2,6 +2,8 @@ import { useState } from 'react'
 import RemixIcon from '@/components/RemixIcon'
 import StatCard from '@/components/StatCard'
 import SegmentedTabs from '@/components/SegmentedTabs'
+import { useCredential } from '@/contexts/CredentialContext'
+import type { CredentialState } from '@/types/foid'
 
 
 /* ── Types ──────────────────────────────────────────────────────────── */
@@ -101,12 +103,41 @@ const TABS: { key: Filter; label: string }[] = [
   { key: 'revoked',  label: 'Revoked'  },
 ]
 
+/* ── FOID credential state → CredentialStatus mapping ────────────────── */
+const FOID_STATE_TO_STATUS: Record<CredentialState, CredentialStatus> = {
+  active:       'active',
+  under_review: 'expiring',
+  downgraded:   'expiring',
+  revoked:      'revoked',
+}
+
+const FOID_STATE_LABELS: Record<CredentialState, string> = {
+  active:       'Active',
+  under_review: 'Under Review',
+  downgraded:   'Downgraded',
+  revoked:      'Revoked',
+}
+
 /* ── Page ───────────────────────────────────────────────────────────── */
 export default function VerificationCredentialsPage() {
+  const { credential } = useCredential()
   const [filter, setFilter] = useState<Filter>('all')
   const [search, setSearch] = useState('')
 
-  const visible = CREDENTIALS.filter(c => {
+  /* Inject the live FOID master credential as the first row */
+  const foidEntry: Credential = {
+    id: credential.id,
+    platform: 'FOID Master Credential',
+    logo: '/logo.png',
+    scope: 'identity_verified · bvn_validated · age_over_18 · income_band · account_stability',
+    issued: new Date(credential.issued_at).toLocaleDateString('en-NG', { day: '2-digit', month: 'short', year: 'numeric' }),
+    expires: null,
+    status: FOID_STATE_TO_STATUS[credential.state],
+  }
+
+  const allCredentials = [foidEntry, ...CREDENTIALS]
+
+  const visible = allCredentials.filter(c => {
     if (filter !== 'all' && c.status !== filter) return false
     if (search && !c.platform.toLowerCase().includes(search.toLowerCase())) return false
     return true
@@ -125,6 +156,26 @@ export default function VerificationCredentialsPage() {
           <RemixIcon name="ri-download-2-line" size={20} /> Download Identity Summary
         </button>
       </div>
+
+      {/* ── Live FOID credential state banner ── */}
+      {credential.state !== 'active' && (
+        <div
+          className="flex items-center gap-3 px-5 py-3 rounded-xl border text-[13px] font-semibold"
+          style={{
+            background: credential.state === 'revoked' ? '#fee2e2' : '#fef9c3',
+            borderColor: credential.state === 'revoked' ? '#fca5a5' : '#fde68a',
+            color: credential.state === 'revoked' ? '#dc2626' : '#a16207',
+          }}
+        >
+          <RemixIcon name="ri-alert-fill" size={16} color={credential.state === 'revoked' ? '#dc2626' : '#a16207'} />
+          <span>
+            Your FOID master credential is currently <strong>{FOID_STATE_LABELS[credential.state]}</strong>.
+            {credential.state === 'under_review' && ' Relying parties may see reduced access until review is complete.'}
+            {credential.state === 'downgraded' && ' Some claims have been downgraded — new credential requests may be limited.'}
+            {credential.state === 'revoked' && ' All credential sharing has been halted. Contact support or re-verify your identity.'}
+          </span>
+        </div>
+      )}
 
       {/* ── Stat cards ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

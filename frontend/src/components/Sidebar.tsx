@@ -13,12 +13,12 @@ const TEXT         = '#18181b'   // neutral-900
 const COLLAPSED_W = 56
 
 const NAV_ITEMS = [
-  { to: '/dashboard',             icon: 'ri-dashboard-line',    label: 'Overview'                 },
+  { to: '/dashboard',             icon: 'ri-dashboard-fill',    label: 'Overview'                 },
   { to: '/dashboard/identity',    icon: 'ri-fingerprint-line',  label: 'My Identity'              },
   { to: '/dashboard/banks',       icon: 'ri-bank-line',         label: 'Connected Banks'          },
   { to: '/dashboard/credentials', icon: 'ri-draft-line',        label: 'Verification Credentials' },
   { to: '/dashboard/consents',    icon: 'ri-file-list-3-line',  label: 'Consent Requests'         },
-  { to: '/dashboard/ledger',      icon: 'ri-store-2-line',      label: 'Business Ledger'          },
+  { to: '/dashboard/ledger',      icon: 'ri-store-2-fill',      label: 'Business Ledger'          },
   { to: '/dashboard/history',     icon: 'ri-history-fill',      label: 'Ledger History'           },
   { to: '/dashboard/wallet',      icon: 'ri-quill-pen-line',    label: 'AI Credit Wallet'         },
   { to: '/dashboard/reports',     icon: 'ri-customer-service-2-fill', label: 'Reports & Insights' },
@@ -98,7 +98,7 @@ function NavList({
             collapsed ? 'justify-center px-0 py-2' : 'px-3 py-2',
           ].join(' ')}
         >
-          <RemixIcon name="ri-logout-box-r-line" size={20} color="#ef4444" clickable />
+          <RemixIcon name="ri-logout-box-line" size={20} color="#ef4444" clickable />
           <span
             className="text-[13px] font-medium"
             style={collapsed ? labelStyle(true) : { whiteSpace: 'nowrap' }}
