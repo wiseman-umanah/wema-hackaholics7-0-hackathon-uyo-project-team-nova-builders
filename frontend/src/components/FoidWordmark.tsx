@@ -1,10 +1,18 @@
+import type { CSSProperties } from 'react'
+
 interface FoidWordmarkProps {
   /** Fill colour for all letters. Default: '#18181b' */
   color?: string
-  /** Height of the wordmark in px. Width scales proportionally. Default: 24 */
+  /**
+   * Height of the wordmark in px (number) — OR — pass `style` with a CSS
+   * height value (e.g. `style={{ height: 'clamp(80px, 25vw, 520px)' }}`)
+   * for fluid / responsive sizing. Default: 24
+   */
   height?: number
   /** Extra class names on the wrapper */
   className?: string
+  /** Override wrapper styles — use to pass CSS `height` with clamp/vw values */
+  style?: CSSProperties
 }
 
 /**
@@ -13,8 +21,9 @@ interface FoidWordmarkProps {
  */
 export default function FoidWordmark({
   color = '#18181b',
-  height = 24,
+  height,
   className = '',
+  style,
 }: FoidWordmarkProps) {
   // Original viewBox dimensions per letter
   const letters = [
@@ -28,25 +37,31 @@ export default function FoidWordmark({
     { w: 383, h: 436, d: 'M382.56 429.494H278.462V409.325L297.98 350.77H271.956C255.04 394.361 223.81 436 142.484 436C47.4947 436 0 357.927 0 264.889C0 171.852 47.4947 94.4288 142.484 94.4288C223.81 94.4288 255.04 136.068 271.956 179.659H297.98L278.462 121.104V-48.7058H382.56V429.494ZM278.462 264.889C278.462 209.587 247.232 185.514 191.28 185.514C135.327 185.514 104.098 209.587 104.098 264.889C104.098 320.191 135.327 344.914 191.28 344.914C247.232 344.914 278.462 320.191 278.462 264.889Z' },
   ]
 
-  // Use the tallest source glyph (430) as the reference height so all letters
-  // are drawn on the same baseline. Scale factor maps that reference → `height`.
+  // When a CSS `style` with height or width is provided (fluid mode), render
+  // SVGs proportionally so they fill the wrapper. Otherwise use fixed px `height`.
+  const fluidMode = (style?.height !== undefined || style?.width !== undefined) && height === undefined
   const REF_H = 430
-  const scale = height / REF_H
+  const scale = fluidMode ? 1 : (height ?? 24) / REF_H
 
   return (
     <span
       className={`inline-flex items-end ${className}`}
-      style={{ gap: height * 0.06, lineHeight: 0 }}
+      style={{
+        gap: fluidMode ? '3%' : (height ?? 24) * 0.06,
+        lineHeight: 0,
+        ...style,
+      }}
       aria-label="Foid"
     >
       {letters.map((l, i) => (
         <svg
           key={i}
-          width={l.w * scale}
-          height={l.h * scale}
+          width={fluidMode ? `${(l.w / 430) * 100}%` : l.w * scale}
+          height={fluidMode ? '100%' : l.h * scale}
           viewBox={`0 0 ${l.w} ${l.h}`}
           fill="none"
           aria-hidden="true"
+          style={fluidMode ? { display: 'block' } : undefined}
         >
           <path d={l.d} fill={color} />
         </svg>

@@ -30,14 +30,14 @@ export default function LandingNav() {
         <div className="flex items-center gap-2.5 shrink-0">
           <Link
             to="/login"
-            className="hidden sm:inline-flex items-center px-[76px] py-3 rounded-full text-[13px] font-bold text-white transition-opacity hover:opacity-90"
+            className="inline-flex items-center px-6 py-3 rounded-full text-[13px] font-bold text-white transition-opacity hover:opacity-90"
             style={{ background: BRAND }}
           >
             Log in
           </Link>
           <Link
             to="/signup"
-            className="inline-flex items-center px-5 py-3 rounded-full text-[13px] font-bold transition-colors hover:bg-neutral-50"
+            className="hidden sm:inline-flex items-center px-5 py-3 rounded-full text-[13px] font-bold transition-colors hover:bg-neutral-50"
             style={{ border: `1.5px solid ${BRAND}`, color: BRAND }}
           >
             Get your FOID

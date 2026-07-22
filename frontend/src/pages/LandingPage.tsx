@@ -100,11 +100,11 @@ export default function LandingPage() {
       <LandingNav />
 
       
-      <section className="max-w-[95%] min-h-screen mx-auto sm:px-10 grid grid-rows-[1fr_120px]">
-        <div className="grid grid-cols-[3fr_2fr] items-center">
+      <section className="max-w-[95%] min-h-screen mx-auto px-4 sm:px-10 flex flex-col justify-center md:justify-between gap-10 py-12 md:py-0 md:grid md:grid-rows-[1fr_120px]">
+        <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] items-center gap-10">
           <div>
             {/* Social proof pill */}
-            <div className="flex items-center gap-2 mb-6">
+            <div className="flex items-center gap-2 mb-6 flex-wrap">
               <div className="flex -space-x-1.5 shrink-0">
                 {AVATAR_COLORS.map((_, i) => (
                   <img
@@ -116,31 +116,31 @@ export default function LandingPage() {
                   />
                 ))}
               </div>
-              <span className="text-[16px] text-black">
+              <span className="text-[13px] sm:text-[16px] text-black">
                 <b ref={ref}>{count.toLocaleString()}+</b> Nigerian founders &amp; freelancers verified this quarter
               </span>
             </div>
 
             {/* Headline */}
-            <h1 className="text-5xl font-creato sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-[1.07] tracking-tight text-neutral-900 mb-7">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold leading-[1.07] tracking-tight text-neutral-900 mb-7">
               One identity{' '}
               <span style={{ color: BRAND }}>your<br />banks, apps, and<br />taxman</span>
               {' '}can all trust.
             </h1>
 
             {/* CTAs */}
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <Link
                 to="/signup"
-                className="inline-flex items-center px-9 py-3 rounded-full text-[14px] font-bold text-white transition-opacity hover:opacity-90"
+                className="inline-flex items-center px-4 py-2.5 sm:px-6 sm:py-3 rounded-full text-[12px] sm:text-[14px] font-bold text-white transition-opacity hover:opacity-90 whitespace-nowrap"
                 style={{ background: BRAND }}
               >
                 Create your FOID
               </Link>
               <a
                 href="#how"
-				className="inline-flex items-center px-5 py-3 rounded-full text-[13px] font-bold transition-colors hover:bg-neutral-50"
-				style={{ border: `1.5px solid ${BRAND}`, color: BRAND }}
+                className="inline-flex items-center px-4 py-2.5 sm:px-5 sm:py-3 rounded-full text-[12px] sm:text-[13px] font-bold transition-colors hover:bg-neutral-50 whitespace-nowrap"
+                style={{ border: `1.5px solid ${BRAND}`, color: BRAND }}
               >
                 See how it Works
               </a>
@@ -148,7 +148,7 @@ export default function LandingPage() {
           </div>
 
           {/* ── Right: hero image ── */}
-          <div className="hidden md:flex items-center justify-center">
+          <div className="flex items-center justify-center">
             <img
               src="/landing/hero.png"
               alt="FOID dashboard preview"
@@ -166,15 +166,14 @@ export default function LandingPage() {
             WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)',
           }}
         >
-          {/* track — 4× copies; animation moves -25% (= 1 copy width) for a seamless loop */}
-          <div className="animate-marquee" style={{ gap: '3rem' }}>
+          <div className="animate-marquee" style={{ gap: '2rem' }}>
             {[...PARTNERS, ...PARTNERS, ...PARTNERS, ...PARTNERS].map((p, i) => (
               p.logo ? (
                 <img
                   key={i}
                   src={`/landing${p.logo}`}
                   alt={p.name}
-                  className="h-8 sm:h-9 w-auto object-contain shrink-0 opacity-70 hover:opacity-100 transition-opacity"
+                  className="h-6 sm:h-8 w-auto object-contain shrink-0 opacity-70 hover:opacity-100 transition-opacity"
                 />
               ) : null
             ))}
@@ -296,11 +295,11 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="features" className=" relative max-w-[95%] mx-auto sm:px-10 min-h-screen flex items-center">
-        <div className="grid grid-cols-2 gap-12 md:gap-16 items-center">
+      <section id="features" className="relative max-w-[95%] mx-auto px-4 sm:px-10 py-20 md:min-h-screen md:flex md:items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center w-full">
 
           <div>
-            <h2 className="text-[32px] font-creato sm:text-[42px] font-extrabold text-neutral-900 leading-tight tracking-tight mb-4">
+            <h2 className="text-[28px] sm:text-[32px] md:text-[42px] font-extrabold text-neutral-900 leading-tight tracking-tight mb-4">
               Your books, kept without<br />you touching a spreadsheet.
             </h2>
             <p className="text-[14px] text-neutral-500 leading-relaxed mb-7">
@@ -333,9 +332,9 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          <div className="rounded-3xl px-15 pt-[90px]" style={{ background: '#f2f2f2' }}>
+          <div className="rounded-3xl p-4 pt-8" style={{ background: '#f2f2f2' }}>
             {/* inner white card */}
-            <div className="bg-white px-5 py-4">
+            <div className="bg-white px-5 md:px-2 py-4 rounded-2xl">
               {/* Header */}
               <div className="flex items-center justify-between mb-1 pb-3" style={{ borderBottom: '1px solid #e4e4e7' }}>
                 <span className="text-[14px] font-bold text-neutral-900">Latest entries</span>
@@ -369,34 +368,34 @@ export default function LandingPage() {
 
         </div>
 
-		<div
-          className="absolute -bottom-40 left-1/2 translate-x-[-50%] w-[50%] rounded-2xl px-[100px] py-14 text-center"
-          style={{ background: BRAND_BG }}
-        >
-          <h2 className="text-[36px] font-creato sm:text-[28px] font-extrabold text-white leading-tight tracking-tight mb-3">
-            Your financial identity, verified once.
-          </h2>
-          <p className="text-[13.5px] leading-relaxed mb-7" style={{ color: 'rgba(255,255,255,0.8)' }}>
-            Free to create. Takes about six minutes, most of it spent choosing your bank.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <Link
-              to="/signup"
-              className="inline-flex items-center px-6 py-3 rounded-full text-[14px] font-bold bg-white transition-opacity hover:opacity-90"
-              style={{ color: BRAND }}
-            >
-              Create your FOID
-            </Link>
-            <a
-              href="mailto:hello@foid.ng"
-              className="inline-flex items-center px-6 py-3 rounded-full text-[14px] font-bold text-white transition-colors hover:bg-white/10"
-              style={{ border: '1.5px solid rgba(255,255,255,0.4)' }}
-            >
-              Talk to us
-            </a>
-          </div>
-        </div>
-      </section>
+		      <div
+		        className="mt-14 md:absolute md:-bottom-40 md:left-1/2 md:-translate-x-1/2 w-full md:w-[560px] max-w-full rounded-2xl px-6 sm:px-12 py-10 text-center"
+		        style={{ background: BRAND_BG }}
+		      >
+		        <h2 className="text-[24px] sm:text-[28px] font-extrabold text-white leading-tight tracking-tight mb-3">
+		          Your financial identity, verified once.
+		        </h2>
+		        <p className="text-[13.5px] leading-relaxed mb-7" style={{ color: 'rgba(255,255,255,0.8)' }}>
+		          Free to create. Takes about six minutes, most of it spent choosing your bank.
+		        </p>
+		        <div className="flex flex-wrap items-center justify-center gap-3">
+		          <Link
+		            to="/signup"
+		            className="inline-flex items-center px-6 py-3 rounded-full text-[14px] font-bold bg-white transition-opacity hover:opacity-90"
+		            style={{ color: BRAND }}
+		          >
+		            Create your FOID
+		          </Link>
+		          <a
+		            href="mailto:hello@foid.ng"
+		            className="inline-flex items-center px-6 py-3 rounded-full text-[14px] font-bold text-white transition-colors hover:bg-white/10"
+		            style={{ border: '1.5px solid rgba(255,255,255,0.4)' }}
+		          >
+		            Talk to us
+		          </a>
+		        </div>
+		      </div>
+		    </section>
       <LandingFooter />
 
     </div>
