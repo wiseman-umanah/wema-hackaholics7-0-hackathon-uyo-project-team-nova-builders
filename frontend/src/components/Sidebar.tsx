@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import RemixIcon from './RemixIcon'
+import FoidWordmark from './FoidWordmark'
 import { useAuth } from '../contexts/AuthContext'
 
 /* ── Design tokens ──────────────────────────────────────────────────── */
@@ -159,18 +160,7 @@ export default function Sidebar({ drawerOpen, onDrawerClose }: SidebarProps) {
         }}
       />
       {(!collapsed || !showCollapse) && (
-        <span
-          style={{
-            fontFamily: "'Neue Machina', sans-serif",
-            fontWeight: 800,
-            fontSize: 20,
-            color: TEXT,
-            letterSpacing: '-0.3px',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          FOID
-        </span>
+        <FoidWordmark color={TEXT} height={20} />
       )}
       {showCollapse && (
         <RemixIcon

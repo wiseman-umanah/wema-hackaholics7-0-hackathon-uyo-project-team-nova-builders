@@ -1,36 +1,32 @@
 import { Link } from 'react-router-dom'
+import FoidWordmark from '@/components/FoidWordmark'
 
 export default function LandingFooter() {
   return (
-    <footer style={{ background: '#000000', overflow: 'hidden' }}>
+    <footer
+      className="min-h-screen"
+      style={{ background: '#000000', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+    >
 
-      {/* Giant "Foid" wordmark — full-width bleed, bottom half clipped */}
+      {/* Giant "Foid" wordmark — grows to fill ~95% of the footer height */}
       <div
         aria-hidden="true"
         style={{
-          width: '100%',
-          height: '100%',
+          flex: '1 1 0',           /* takes all available space above the bottom bar */
+          overflow: 'hidden',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',    /* vertically centre inside the flex area */
         }}
       >
-        <span
-          style={{
-            display: 'block',
-            fontSize: '50vw',
-            fontWeight: 1000,
-            color: '#ffffff',
-            letterSpacing: '-0.01em',
-            lineHeight: 1,
-            whiteSpace: 'nowrap',
-            textAlign: 'center',
-          }}
-        >
-          Foid
-        </span>
+        <FoidWordmark color="#ffffff" height={500} />
       </div>
 
-      {/* Bottom bar */}
+      {/* Bottom bar — fixed height, sits at the bottom */}
       <div
+        className="max-w-[1100px] sm:px-10 py-6 border-t border-neutral-600"
         style={{
+          width: '100%',
           margin: '0 auto',
           display: 'flex',
           alignItems: 'center',
@@ -38,7 +34,6 @@ export default function LandingFooter() {
           gap: 12,
           flexWrap: 'wrap',
         }}
-		className='max-w-[95%] sm:px-10 py-6  border-t border-neutral-600'
       >
         <Link to="/" className="flex items-center gap-2 shrink-0">
           <img src="/logo.png" alt="FOID" className="h-9 w-auto object-contain" />
@@ -49,10 +44,7 @@ export default function LandingFooter() {
             Foid
           </span>
         </Link>
-        <p 
-			className='font-semibold'
-			style={{ color: '#ffffff', fontSize: 13, margin: 0 }}
-		>
+        <p className="font-semibold" style={{ color: '#ffffff', fontSize: 13, margin: 0 }}>
           &copy; {new Date().getFullYear()} FOID. Built for Nigerian founders and freelancers.
         </p>
       </div>
