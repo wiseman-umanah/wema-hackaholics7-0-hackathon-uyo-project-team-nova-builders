@@ -11,7 +11,7 @@ export default function LandingNav() {
         <Link to="/" className="flex items-center gap-2 shrink-0">
           <img src="/logo.png" alt="FOID" className="h-9 w-auto object-contain" />
           <span 
-		  	className='font-ultrabold'
+		  	className='font-extrabold font-machina'
 		  	style={{ fontWeight: 800, fontSize: 24, letterSpacing: '-0.4px', color: '#18181b' }}
 			>
             Foid

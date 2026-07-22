@@ -122,7 +122,7 @@ export default function LandingPage() {
             </div>
 
             {/* Headline */}
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-[1.07] tracking-tight text-neutral-900 mb-7">
+            <h1 className="text-5xl font-creato sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-[1.07] tracking-tight text-neutral-900 mb-7">
               One identity{' '}
               <span style={{ color: BRAND }}>your<br />banks, apps, and<br />taxman</span>
               {' '}can all trust.
@@ -193,7 +193,7 @@ export default function LandingPage() {
           >
             Three steps, once
           </span>
-          <h2 className="text-[28px] sm:text-[36px] md:text-[44px] font-extrabold text-neutral-900 leading-tight tracking-tight mb-4">
+          <h2 className="text-[28px] font-creato sm:text-[36px] md:text-[44px] font-extrabold text-neutral-900 leading-tight tracking-tight mb-4">
             Identity, banking, and<br />bookkeeping — finally one thing.
           </h2>
           <p className="text-[14px] text-neutral-500 leading-relaxed">
@@ -224,7 +224,7 @@ export default function LandingPage() {
                 <RemixIcon name={icon} size={20} />
               </div>
               <div>
-                <p className="font-bold text-[14px] text-neutral-900 mb-1">{title}</p>
+                <p className="font-bold font-creato text-[14px] text-neutral-900 mb-1">{title}</p>
                 <p className="text-[13px] text-neutral-500 leading-relaxed">{body}</p>
               </div>
             </div>
@@ -242,7 +242,7 @@ export default function LandingPage() {
           >
             Three steps, once
           </span>
-          <h2 className="text-[30px] sm:text-[40px] md:text-[48px] font-extrabold text-white leading-tight tracking-tight mb-4">
+          <h2 className="text-[30px] font-creato sm:text-[40px] md:text-[48px] font-extrabold text-white leading-tight tracking-tight mb-4">
             Set it up this week.<br />Trusted from then on.
           </h2>
           <p className="text-[14px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
@@ -275,8 +275,8 @@ export default function LandingPage() {
               className="rounded-2xl p-6 flex flex-col gap-3"
               style={{ background: 'rgba(255,255,255,0.06)' }}
             >
-              <span className="text-[24px] font-bold" style={{ color: BRAND, fontWeight: 800 }}>{num}</span>
-              <p className="text-[14px] font-bold text-white">{title}</p>
+              <span className="text-[24px] font-machina font-bold" style={{ color: BRAND, fontWeight: 800 }}>{num}</span>
+              <p className="text-[14px] font-bold font-creato text-white">{title}</p>
               <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{body}</p>
             </div>
           ))}
@@ -287,7 +287,7 @@ export default function LandingPage() {
         <div className="max-w-[1100px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
           {STATS.map((s, i) => (
             <div key={i} className="flex text-center flex-col gap-1.5">
-              <div className="text-[44px] sm:text-[56px] font-extrabold text-neutral-900 leading-none tracking-tight">
+              <div className="text-[44px] font-creato sm:text-[56px] font-extrabold text-neutral-900 leading-none tracking-tight">
                 {s.value}
               </div>
               <div className="text-[12.5px] text-neutral-500 leading-snug ">{s.label}</div>
@@ -300,7 +300,7 @@ export default function LandingPage() {
         <div className="grid grid-cols-2 gap-12 md:gap-16 items-center">
 
           <div>
-            <h2 className="text-[32px] sm:text-[42px] font-extrabold text-neutral-900 leading-tight tracking-tight mb-4">
+            <h2 className="text-[32px] font-creato sm:text-[42px] font-extrabold text-neutral-900 leading-tight tracking-tight mb-4">
               Your books, kept without<br />you touching a spreadsheet.
             </h2>
             <p className="text-[14px] text-neutral-500 leading-relaxed mb-7">
@@ -373,7 +373,7 @@ export default function LandingPage() {
           className="absolute -bottom-40 left-1/2 translate-x-[-50%] w-[50%] rounded-2xl px-[100px] py-14 text-center"
           style={{ background: BRAND_BG }}
         >
-          <h2 className="text-[36px] sm:text-[28px] font-extrabold text-white leading-tight tracking-tight mb-3">
+          <h2 className="text-[36px] font-creato sm:text-[28px] font-extrabold text-white leading-tight tracking-tight mb-3">
             Your financial identity, verified once.
           </h2>
           <p className="text-[13.5px] leading-relaxed mb-7" style={{ color: 'rgba(255,255,255,0.8)' }}>
