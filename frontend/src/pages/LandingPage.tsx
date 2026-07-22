@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import LandingNav from '@/components/landing/LandingNav'
 import LandingFooter from '@/components/landing/LandingFooter'
 import RemixIcon from '@/components/RemixIcon'
+import FadeUp from '@/components/FadeUp'
 
 /* ── Brand ───────────────────────────────────────────────────────────── */
 const BRAND    = '#c026d3'
@@ -104,7 +106,12 @@ export default function LandingPage() {
         <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] items-center gap-10">
           <div>
             {/* Social proof pill */}
-            <div className="flex items-center gap-2 mb-6 flex-wrap">
+            <motion.div
+              className="flex items-center gap-2 mb-6 flex-wrap"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            >
               <div className="flex -space-x-1.5 shrink-0">
                 {AVATAR_COLORS.map((_, i) => (
                   <img
@@ -119,17 +126,27 @@ export default function LandingPage() {
               <span className="text-[13px] sm:text-[16px] text-black">
                 <b ref={ref}>{count.toLocaleString()}+</b> Nigerian founders &amp; freelancers verified this quarter
               </span>
-            </div>
+            </motion.div>
 
             {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold leading-[1.07] tracking-tight text-neutral-900 mb-7">
+            <motion.h1
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold leading-[1.07] tracking-tight text-neutral-900 mb-7"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            >
               One identity{' '}
               <span style={{ color: BRAND }}>your<br />banks, apps, and<br />taxman</span>
               {' '}can all trust.
-            </h1>
+            </motion.h1>
 
             {/* CTAs */}
-            <div className="flex items-center gap-2 sm:gap-3">
+            <motion.div
+              className="flex items-center gap-2 sm:gap-3"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.38, ease: [0.22, 1, 0.36, 1] }}
+            >
               <Link
                 to="/signup"
                 className="inline-flex items-center px-4 py-2.5 sm:px-6 sm:py-3 rounded-full text-[12px] sm:text-[14px] font-bold text-white transition-opacity hover:opacity-90 whitespace-nowrap"
@@ -144,17 +161,22 @@ export default function LandingPage() {
               >
                 See how it Works
               </a>
-            </div>
+            </motion.div>
           </div>
 
           {/* ── Right: hero image ── */}
-          <div className="flex items-center justify-center">
+          <motion.div
+            className="flex items-center justify-center"
+            initial={{ opacity: 0, scale: 0.97, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          >
             <img
               src="/landing/hero.png"
               alt="FOID dashboard preview"
               className="w-[100%] max-w-none object-contain"
             />
-          </div>
+          </motion.div>
         </div>
 
         {/* ── Partner logos marquee ── */}
@@ -185,7 +207,7 @@ export default function LandingPage() {
 
       <section id="how" className="py-20 md:py-28 px-5 sm:px-10">
         {/* ── Header ── */}
-        <div className="max-w-[640px] mx-auto text-center mb-12">
+        <FadeUp className="max-w-[640px] mx-auto text-center mb-12">
           <span
             className="inline-block mb-4 px-4 py-1 rounded-full text-white text-[11px] font-bold tracking-widest uppercase"
             style={{ background: BRAND_BG }}
@@ -199,7 +221,7 @@ export default function LandingPage() {
             Everything a lender, platform, or tax office needs to trust you,
             built from your own verified data instead of paperwork.
           </p>
-        </div>
+        </FadeUp>
 
         {/* ── Feature cards ── */}
         <div className="max-w-[1100px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -210,10 +232,10 @@ export default function LandingPage() {
             { icon: 'ri-file-shield-line',            title: 'Connect your accounts',    body: 'Securely link the banks and fintechs you already bank with. Read-only, revocable anytime.' },
             { icon: 'ri-government-line', title: 'Tax & budget planning',body: "FOID sets aside what you'll owe in tax and suggests what's safe to spend — before it becomes a scramble." },
             { icon: 'ri-bar-chart-fill',     title: 'Let the AI keep books',    body: "Export bank-grade cash-flow and income reports in one click when it's time to raise or borrow." },
-          ].map(({ icon, title, body }) => (
+          ].map(({ icon, title, body }, idx) => (
+            <FadeUp key={title} delay={idx * 0.08}>
             <div
-              key={title}
-              className="rounded-2xl border border-neutral-200 bg-white p-6 flex flex-col gap-4"
+              className="rounded-2xl border border-neutral-200 bg-white p-6 flex flex-col gap-4 h-full"
             >
               {/* icon badge */}
               <div
@@ -227,13 +249,14 @@ export default function LandingPage() {
                 <p className="text-[13px] text-neutral-500 leading-relaxed">{body}</p>
               </div>
             </div>
+            </FadeUp>
           ))}
         </div>
       </section>
 
 
       <section style={{ background: '#000000' }} className="py-20 md:py-28 px-5 sm:px-10">
-        <div className="max-w-[760px] mx-auto text-center mb-14">
+        <FadeUp className="max-w-[760px] mx-auto text-center mb-14">
           {/* pill */}
           <span
             className="inline-block mb-5 px-4 py-1 rounded-full text-white text-[11px] font-bold tracking-widest uppercase"
@@ -248,7 +271,7 @@ export default function LandingPage() {
             FOID does the verification work up front so every
             conversation after it starts from "yes."
           </p>
-        </div>
+        </FadeUp>
 
         {/* ── Three step cards ── */}
         <div className="max-w-[1100px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -268,16 +291,17 @@ export default function LandingPage() {
               title: 'Let the AI keep books',
               body: 'Transactions are categorised as they happen, tax is set aside automatically, and reports are always ready.',
             },
-          ].map(({ num, title, body }) => (
-            <div
-              key={num}
-              className="rounded-2xl p-6 flex flex-col gap-3"
-              style={{ background: 'rgba(255,255,255,0.06)' }}
-            >
-              <span className="text-[24px] font-machina font-bold" style={{ color: BRAND, fontWeight: 800 }}>{num}</span>
-              <p className="text-[14px] font-bold font-creato text-white">{title}</p>
-              <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{body}</p>
-            </div>
+          ].map(({ num, title, body }, idx) => (
+            <FadeUp key={num} delay={idx * 0.1}>
+              <div
+                className="rounded-2xl p-6 flex flex-col gap-3"
+                style={{ background: 'rgba(255,255,255,0.06)' }}
+              >
+                <span className="text-[24px] font-machina font-bold" style={{ color: BRAND, fontWeight: 800 }}>{num}</span>
+                <p className="text-[14px] font-bold font-creato text-white">{title}</p>
+                <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{body}</p>
+              </div>
+            </FadeUp>
           ))}
         </div>
       </section>
@@ -285,12 +309,12 @@ export default function LandingPage() {
       <section id="stats" className="py-14 md:py-20 px-5 sm:px-10">
         <div className="max-w-[1100px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
           {STATS.map((s, i) => (
-            <div key={i} className="flex text-center flex-col gap-1.5">
+            <FadeUp key={i} delay={i * 0.1} className="flex text-center flex-col gap-1.5">
               <div className="text-[44px] font-creato sm:text-[56px] font-extrabold text-neutral-900 leading-none tracking-tight">
                 {s.value}
               </div>
               <div className="text-[12.5px] text-neutral-500 leading-snug ">{s.label}</div>
-            </div>
+            </FadeUp>
           ))}
         </div>
       </section>
@@ -298,7 +322,7 @@ export default function LandingPage() {
       <section id="features" className="relative max-w-[95%] mx-auto px-4 sm:px-10 py-20 md:min-h-screen md:flex md:items-center">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center w-full">
 
-          <div>
+          <FadeUp>
             <h2 className="text-[28px] sm:text-[32px] md:text-[42px] font-extrabold text-neutral-900 leading-tight tracking-tight mb-4">
               Your books, kept without<br />you touching a spreadsheet.
             </h2>
@@ -330,8 +354,9 @@ export default function LandingPage() {
             >
               Try the AI ledger
             </Link>
-          </div>
+          </FadeUp>
 
+          <FadeUp delay={0.15}>
           <div className="rounded-3xl p-4 pt-8" style={{ background: '#f2f2f2' }}>
             {/* inner white card */}
             <div className="bg-white px-5 md:px-2 py-4 rounded-2xl">
@@ -365,37 +390,38 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
+          </FadeUp>
 
         </div>
 
-		      <div
-		        className="mt-14 md:absolute md:-bottom-40 md:left-1/2 md:-translate-x-1/2 w-full md:w-[560px] max-w-full rounded-2xl px-6 sm:px-12 py-10 text-center"
-		        style={{ background: BRAND_BG }}
-		      >
-		        <h2 className="text-[24px] sm:text-[28px] font-extrabold text-white leading-tight tracking-tight mb-3">
-		          Your financial identity, verified once.
-		        </h2>
-		        <p className="text-[13.5px] leading-relaxed mb-7" style={{ color: 'rgba(255,255,255,0.8)' }}>
-		          Free to create. Takes about six minutes, most of it spent choosing your bank.
-		        </p>
-		        <div className="flex flex-wrap items-center justify-center gap-3">
-		          <Link
-		            to="/signup"
-		            className="inline-flex items-center px-6 py-3 rounded-full text-[14px] font-bold bg-white transition-opacity hover:opacity-90"
-		            style={{ color: BRAND }}
-		          >
-		            Create your FOID
-		          </Link>
-		          <a
-		            href="mailto:hello@foid.ng"
-		            className="inline-flex items-center px-6 py-3 rounded-full text-[14px] font-bold text-white transition-colors hover:bg-white/10"
-		            style={{ border: '1.5px solid rgba(255,255,255,0.4)' }}
-		          >
-		            Talk to us
-		          </a>
-		        </div>
-		      </div>
-		    </section>
+        <div
+		className="mt-14 md:absolute md:-bottom-40 md:left-1/2 md:-translate-x-1/2 w-full md:w-[560px] max-w-full rounded-2xl px-6 sm:px-12 py-10 text-center"
+		style={{ background: BRAND_BG }}
+		>
+		<h2 className="text-[24px] sm:text-[28px] font-extrabold text-white leading-tight tracking-tight mb-3">
+			Your financial identity, verified once.
+		</h2>
+		<p className="text-[13.5px] leading-relaxed mb-7" style={{ color: 'rgba(255,255,255,0.8)' }}>
+			Free to create. Takes about six minutes, most of it spent choosing your bank.
+		</p>
+		<div className="flex flex-wrap items-center justify-center gap-3">
+			<Link
+			to="/signup"
+			className="inline-flex items-center px-6 py-3 rounded-full text-[14px] font-bold bg-white transition-opacity hover:opacity-90"
+			style={{ color: BRAND }}
+			>
+			Create your FOID
+			</Link>
+			<a
+			href="mailto:hello@foid.ng"
+			className="inline-flex items-center px-6 py-3 rounded-full text-[14px] font-bold text-white transition-colors hover:bg-white/10"
+			style={{ border: '1.5px solid rgba(255,255,255,0.4)' }}
+			>
+			Talk to us
+			</a>
+			</div>
+		</div>
+	</section>
       <LandingFooter />
 
     </div>
