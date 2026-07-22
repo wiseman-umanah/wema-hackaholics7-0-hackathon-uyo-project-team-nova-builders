@@ -185,7 +185,7 @@ export default function ConnectedBankPage() {
           style={{ background: '#c026d3' }}
         >
           <RemixIcon name="ri-add-line" size={18} color="#fff" clickable />
-          + Connect Bank
+          Connect Bank
         </button>
       </div>
 

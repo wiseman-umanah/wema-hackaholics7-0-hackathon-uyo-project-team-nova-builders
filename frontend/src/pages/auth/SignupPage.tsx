@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
+import FoidWordmark from '@/components/FoidWordmark'
 
 export default function SignupPage() {
   const navigate = useNavigate()
@@ -99,12 +100,7 @@ export default function SignupPage() {
         >
           <div className="flex items-center gap-2" style={{ marginBottom: 'clamp(12px, 2vh, 24px)' }}>
             <img src="/logo.png" alt="FOID logo" className="h-7 w-auto object-contain" />
-            <span
-              className="text-[21px] font-extrabold text-neutral-900 tracking-tight"
-              style={{ fontFamily: "'Neue Machina', sans-serif" }}
-            >
-              Foid
-            </span>
+            <FoidWordmark color="#18181b" height={20} />
           </div>
 
           <h1
@@ -135,28 +131,28 @@ export default function SignupPage() {
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <Field label="First name" required>
-                <Input id="first-name" name="firstName" placeholder="name@company.com"
+                <Input id="first-name" name="firstName" placeholder="John"
                   value={form.firstName} onChange={set} required />
               </Field>
               <Field label="Last name" required>
-                <Input id="last-name" name="lastName" placeholder="name@company.com"
+                <Input id="last-name" name="lastName" placeholder="Doe"
                   value={form.lastName} onChange={set} required />
               </Field>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <Field label="Middle name">
-                <Input id="middle-name" name="middleName" placeholder="name@company.com"
+                <Input id="middle-name" name="middleName" placeholder="Bob"
                   value={form.middleName} onChange={set} />
               </Field>
               <Field label="NIN" required>
-                <Input id="nin" name="nin" placeholder="name@company.com"
+                <Input id="nin" name="nin" placeholder="23365001238"
                   value={form.nin} onChange={set} required />
               </Field>
             </div>
 
             <Field label="Email address" required>
-              <Input id="email" name="email" type="email" placeholder="name@company.com"
+              <Input id="email" name="email" type="email" placeholder="bobdylan@gmail.com"
                 value={form.email} onChange={set} required />
             </Field>
 

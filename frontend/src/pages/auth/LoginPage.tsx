@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
+import FoidWordmark from '@/components/FoidWordmark'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -66,12 +67,7 @@ export default function LoginPage() {
           {/* Logo */}
           <div className="flex items-center gap-2" style={{ marginBottom: 'clamp(16px, 3vh, 32px)' }}>
             <img src="/logo.png" alt="FOID logo" className="h-7 w-auto object-contain" />
-            <span
-              className="text-[21px] font-extrabold text-neutral-900 tracking-tight"
-              style={{ fontFamily: "'Neue Machina', sans-serif" }}
-            >
-              Foid
-            </span>
+            <FoidWordmark color="#18181b" height={20} />
           </div>
 
           {/* Heading */}
@@ -108,7 +104,7 @@ export default function LoginPage() {
                 id="login-email"
                 name="email"
                 type="email"
-                placeholder="name@company.com"
+                placeholder="bobdylan@gmail.com"
                 value={form.email}
                 onChange={set}
                 required
